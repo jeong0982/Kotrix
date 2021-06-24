@@ -211,6 +211,42 @@ class Matrix(private val rows: Int, private val cols: Int, val data: DoubleArray
         }
     }
 
+    fun concat(other: Matrix, dim: Int = 1) : Matrix {
+        return when (dim) {
+            0 -> {
+                if (cols != other.cols) throw IllegalArgumentException("Matrix.concat: number of columns does not match")
+                val newRows = rows + other.rows
+                val newCols = cols
+                val newData = DoubleArray(newRows * newCols) {
+                    val newRowIndex = it / newCols
+                    val newColIndex = it % newCols
+                    if (newRowIndex < rows) {
+                        this[newRowIndex, newColIndex]
+                    } else {
+                        other[newRowIndex - rows, newColIndex]
+                    }
+                }
+                Matrix(newRows, newCols, newData)
+            }
+            1 -> {
+                if (rows != other.rows) throw IllegalArgumentException("Matrix.concat: number of rows does not match")
+                val newRows = rows
+                val newCols = cols + other.cols
+                val newData = DoubleArray(newRows * newCols) {
+                    val newRowIndex = it / newCols
+                    val newColIndex = it % newCols
+                    if (newColIndex < cols) {
+                        this[newRowIndex, newColIndex]
+                    } else {
+                        other[newRowIndex, newColIndex - cols]
+                    }
+                }
+                Matrix(newRows, newCols, newData)
+            }
+            else -> throw IllegalArgumentException("Matrix.concat: dim must be 0 or 1")
+        }
+    }
+
     override fun toString(): String {
         var result = ""
         for (i in 0 until rows) {

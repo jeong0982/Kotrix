@@ -50,3 +50,4 @@ println(mat)
 * Set a submatrix by `mat.getSubmatrix(rowIndexStart, rowIndexEnd, colIndexStart, colIndexEnd, newMat)`
 * Get a cofactor matrix by `val cofactorMat = mat.cofactorMatrix()`
 * Do a row switching operation by `val newMat = mat.switchRow(rowIndex1, rowIndex2)`
+* Concat to another matrix by `val concatMat = mat.concat(otherMat, dim)`

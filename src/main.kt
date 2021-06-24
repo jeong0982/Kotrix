@@ -34,4 +34,5 @@ fun main(args: Array<String>) {
 //    println(mat2)
 //    println(mat2.cofactorMatrix(1, 1))
 //    println(mat2.switchRow(1, 3))
+    println(mat1.concat(mat2, 0))
 }
