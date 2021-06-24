@@ -3,7 +3,7 @@ import kotlin.math.round
 
 class Matrix(private val rows: Int, private val cols: Int, val data: DoubleArray = DoubleArray(rows * cols) { 0.0 }) {
     companion object {
-        fun identiyMatrix(dim: Int) : Matrix {
+        fun identityMatrix(dim: Int) : Matrix {
             val newData = DoubleArray(dim * dim) {
                 val rowIndex = it / dim
                 val colIndex = it % dim
@@ -117,10 +117,10 @@ class Matrix(private val rows: Int, private val cols: Int, val data: DoubleArray
                 return if (a == 0.0) 0.0 // 첫 번째 열이 모두 0이다.
                 else {
                     val matP1A = switchRow(0, switchIndex)
-                    val v = matP1A.getSubMatrix(1, rows, 0, 1)
-                    val wT = matP1A.getSubMatrix(0, 1, 1, cols)
+                    val v = matP1A.getSubmatrix(1, rows, 0, 1)
+                    val wT = matP1A.getSubmatrix(0, 1, 1, cols)
                     val c = 1 / a
-                    val matAPrime = matP1A.getSubMatrix(1, rows, 1, cols)
+                    val matAPrime = matP1A.getSubmatrix(1, rows, 1, cols)
                     sign * a * (matAPrime - (v * wT) * c).determinant()
                 }
             }
@@ -142,11 +142,11 @@ class Matrix(private val rows: Int, private val cols: Int, val data: DoubleArray
     fun inverseMatrix() : Matrix {
         if (rows != cols) throw IllegalArgumentException("Matrix.inverseMatrix: Only available for square matrices")
         val det = this.determinant()
-        return if (det == 0.0) Matrix.identiyMatrix(rows)
+        return if (det == 0.0) Matrix.identityMatrix(rows)
         else this.adjointMatrix() * (det.pow(-1))
     }
 
-    private fun getSubMatrix(rowIndex1: Int, rowIndex2: Int, colIndex1: Int, colIndex2: Int): Matrix {
+    private fun getSubmatrix(rowIndex1: Int, rowIndex2: Int, colIndex1: Int, colIndex2: Int): Matrix {
         return if (rowIndex1 < 0 || colIndex1 < 0 || rowIndex1 >= rowIndex2 || colIndex1 >= colIndex2
             || rowIndex2 > rows || colIndex2 > cols) {
             throw IllegalArgumentException("Matrix.Submatrix: Index out of bound")
@@ -162,7 +162,7 @@ class Matrix(private val rows: Int, private val cols: Int, val data: DoubleArray
         }
     }
 
-    private fun setSubMatrix(rowIndex1: Int, rowIndex2: Int, colIndex1: Int, colIndex2: Int, other: Matrix) {
+    private fun setSubmatrix(rowIndex1: Int, rowIndex2: Int, colIndex1: Int, colIndex2: Int, other: Matrix) {
         val newRows = rowIndex2 - rowIndex1
         val newCols = colIndex1 - colIndex2
         if (rowIndex1 < 0 || colIndex1 < 0 || rowIndex1 >= rowIndex2 || colIndex1 >= colIndex2

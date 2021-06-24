@@ -7,7 +7,8 @@ fun main(args: Array<String>) {
         5.0, 2.0, 0.0, 9.0
     ))
     println(mat)
-    println(mat.determinant())
-    println(mat.inverseMatrix() * 376.0)
-    println(mat.adjointMatrix())
+//    println(mat.determinant())
+//    println(mat.inverseMatrix() * 376.0)
+//    println(mat.adjointMatrix())
+
 }
