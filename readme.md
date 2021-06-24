@@ -52,3 +52,4 @@ println(mat)
 * Do a row switching operation by `val newMat = mat.switchRow(rowIndex1, rowIndex2)`
 * Concat to another matrix by `val concatMat = mat.concat(otherMat, dim)`
 * Get a col/row vector-wise norm<sup>2</sup> array by `val normMat = mat.colVecNormSq()`
+* Sum up all elements by `val sum = mat.sum()`

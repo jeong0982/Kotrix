@@ -269,6 +269,12 @@ class Matrix(private val rows: Int, private val cols: Int, val data: DoubleArray
         return Matrix(rows, 1, newData)
     }
 
+    fun sum(): Double {
+        var sum = 0.0
+        data.forEach { sum += it }
+        return sum
+    }
+
     override fun toString(): String {
         var result = ""
         for (i in 0 until rows) {
