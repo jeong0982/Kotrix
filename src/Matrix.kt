@@ -77,7 +77,7 @@ class Matrix(private val rows: Int, private val cols: Int, val data: DoubleArray
         }
     }
 
-    private fun transpose() : Matrix {
+    fun transpose() : Matrix {
         val newData = DoubleArray(rows * cols) {
             val transposedRowIndex = it / rows
             val transposedColIndex = it % rows
@@ -146,7 +146,7 @@ class Matrix(private val rows: Int, private val cols: Int, val data: DoubleArray
         else this.adjointMatrix() * (det.pow(-1))
     }
 
-    private fun getSubmatrix(rowIndex1: Int, rowIndex2: Int, colIndex1: Int, colIndex2: Int): Matrix {
+    fun getSubmatrix(rowIndex1: Int, rowIndex2: Int, colIndex1: Int, colIndex2: Int): Matrix {
         return if (rowIndex1 < 0 || colIndex1 < 0 || rowIndex1 >= rowIndex2 || colIndex1 >= colIndex2
             || rowIndex2 > rows || colIndex2 > cols) {
             throw IllegalArgumentException("Matrix.Submatrix: Index out of bound")
@@ -162,18 +162,22 @@ class Matrix(private val rows: Int, private val cols: Int, val data: DoubleArray
         }
     }
 
-    private fun setSubmatrix(rowIndex1: Int, rowIndex2: Int, colIndex1: Int, colIndex2: Int, other: Matrix) {
+    fun setSubmatrix(rowIndex1: Int, rowIndex2: Int, colIndex1: Int, colIndex2: Int, other: Matrix) {
         val newRows = rowIndex2 - rowIndex1
-        val newCols = colIndex1 - colIndex2
+        val newCols = colIndex2 - colIndex1
         if (rowIndex1 < 0 || colIndex1 < 0 || rowIndex1 >= rowIndex2 || colIndex1 >= colIndex2
             || rowIndex2 > rows || colIndex2 > cols || newRows != other.rows || newCols != other.cols) {
             throw IllegalArgumentException("Matrix.Submatrix: Index out of bound")
         } else {
-
+            other.data.forEachIndexed { index, element ->
+                val otherRowIndex = index / other.cols
+                val otherColIndex = index % other.cols
+                this[rowIndex1 + otherRowIndex, colIndex1 + otherColIndex] = element
+            }
         }
     }
 
-    private fun cofactorMatrix(rowIndex: Int, colIndex: Int) : Matrix {
+    fun cofactorMatrix(rowIndex: Int, colIndex: Int) : Matrix {
         return if (rows < 2 || cols < 2 || rowIndex >= rows || colIndex >= cols) {
             throw IllegalArgumentException("Matrix.cofactorMatrix: Index out of bound")
         } else {
@@ -188,7 +192,7 @@ class Matrix(private val rows: Int, private val cols: Int, val data: DoubleArray
         }
     }
 
-    private fun switchRow(rowIndex1: Int, rowIndex2: Int): Matrix {
+    fun switchRow(rowIndex1: Int, rowIndex2: Int): Matrix {
         return if (rowIndex1 < 0 || rowIndex2 < 0 || rowIndex1 >= rows || rowIndex2 >= rows) {
             throw IllegalArgumentException("Matrix.switchRow: Index out of bound")
         } else if (rowIndex1 == rowIndex2) {
