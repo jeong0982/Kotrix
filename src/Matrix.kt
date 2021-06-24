@@ -247,6 +247,28 @@ class Matrix(private val rows: Int, private val cols: Int, val data: DoubleArray
         }
     }
 
+    fun colVecNormSq(): Matrix {
+        val newData = DoubleArray(1 * cols) {
+            var norm = 0.0
+            for (rowIndex in 0 until rows) {
+                norm += this[rowIndex, it].pow(2)
+            }
+            norm
+        }
+        return Matrix(1, cols, newData)
+    }
+
+    fun rowVecNormSq(): Matrix {
+        val newData = DoubleArray(rows * 1) {
+            var norm = 0.0
+            for (colIndex in 0 until cols) {
+                norm += this[it, colIndex].pow(2)
+            }
+            norm
+        }
+        return Matrix(rows, 1, newData)
+    }
+
     override fun toString(): String {
         var result = ""
         for (i in 0 until rows) {
