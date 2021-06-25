@@ -58,4 +58,5 @@ fun main(args: Array<String>) {
 
     println(colVec.replicate(3))
     println(rowVec.replicate(5))
+    println(colVec * colVec.transpose())
 }

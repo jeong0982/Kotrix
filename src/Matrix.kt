@@ -100,6 +100,42 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
         return Matrix(rows, rows, newData)
     }
 
+    open operator fun div(other: Double): Matrix {
+        val newData = DoubleArray(rows * cols) {
+            val rowIndex = it / cols
+            val colIndex = it % cols
+            this[rowIndex, colIndex] / other
+        }
+        return Matrix(rows, rows, newData)
+    }
+
+    open operator fun div(other: Long): Matrix {
+        val newData = DoubleArray(rows * cols) {
+            val rowIndex = it / cols
+            val colIndex = it % cols
+            this[rowIndex, colIndex] / other
+        }
+        return Matrix(rows, rows, newData)
+    }
+
+    open operator fun div(other: Float): Matrix {
+        val newData = DoubleArray(rows * cols) {
+            val rowIndex = it / cols
+            val colIndex = it % cols
+            this[rowIndex, colIndex] / other
+        }
+        return Matrix(rows, rows, newData)
+    }
+
+    open operator fun div(other: Int): Matrix {
+        val newData = DoubleArray(rows * cols) {
+            val rowIndex = it / cols
+            val colIndex = it % cols
+            this[rowIndex, colIndex] / other
+        }
+        return Matrix(rows, rows, newData)
+    }
+
     operator fun get(rowIndex: Int, colIndex: Int) : Double {
         if (rowIndex < 0 || colIndex < 0 || rowIndex >= rows || colIndex >= cols) {
             throw IllegalArgumentException("Matrix.get: Index out of bound")
@@ -286,7 +322,7 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
         }
     }
 
-    fun colVecNormSq(): Matrix {
+    fun colVecNormSq(): RowVector {
         val newData = DoubleArray(1 * cols) {
             var norm = 0.0
             for (rowIndex in 0 until rows) {
@@ -294,10 +330,10 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
             }
             norm
         }
-        return Matrix(1, cols, newData)
+        return RowVector(cols, newData)
     }
 
-    fun rowVecNormSq(): Matrix {
+    fun rowVecNormSq(): ColumnVector {
         val newData = DoubleArray(rows * 1) {
             var norm = 0.0
             for (colIndex in 0 until cols) {
@@ -305,7 +341,7 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
             }
             norm
         }
-        return Matrix(rows, 1, newData)
+        return ColumnVector(1, newData)
     }
 
     fun sum(): Double {
@@ -411,6 +447,34 @@ class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : 
     override operator fun times(other: Int): ColumnVector {
         val newData = DoubleArray(size) {
             other * this[it]
+        }
+        return ColumnVector(size, newData)
+    }
+
+    override operator fun div(other: Double): ColumnVector {
+        val newData = DoubleArray(size) {
+            this[it] / other
+        }
+        return ColumnVector(size, newData)
+    }
+
+    override operator fun div(other: Long): ColumnVector {
+        val newData = DoubleArray(size) {
+            this[it] / other
+        }
+        return ColumnVector(size, newData)
+    }
+
+    override operator fun div(other: Float): ColumnVector {
+        val newData = DoubleArray(size) {
+            this[it] / other
+        }
+        return ColumnVector(size, newData)
+    }
+
+    override operator fun div(other: Int): ColumnVector {
+        val newData = DoubleArray(size) {
+            this[it] / other
         }
         return ColumnVector(size, newData)
     }
@@ -554,6 +618,34 @@ class RowVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}): Matr
     override operator fun times(other: Int): RowVector {
         val newData = DoubleArray(size) {
             other * this[it]
+        }
+        return RowVector(size, newData)
+    }
+
+    override operator fun div(other: Double): RowVector {
+        val newData = DoubleArray(size) {
+            this[it] / other
+        }
+        return RowVector(size, newData)
+    }
+
+    override operator fun div(other: Long): RowVector {
+        val newData = DoubleArray(size) {
+            this[it] / other
+        }
+        return RowVector(size, newData)
+    }
+
+    override operator fun div(other: Float): RowVector {
+        val newData = DoubleArray(size) {
+            this[it] / other
+        }
+        return RowVector(size, newData)
+    }
+
+    override operator fun div(other: Int): RowVector {
+        val newData = DoubleArray(size) {
+            this[it] / other
         }
         return RowVector(size, newData)
     }

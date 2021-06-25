@@ -50,6 +50,7 @@ println(rowVec)
     * Matrix - Matrix
     * Matrix * Matrix
     * Matrix * (Double, Long, Int, Float)
+    * Matrix / (Double, Long, Int, Float)
     * Get an element `val e = mat[i, j]`
     * Set an element `mat[i, j] = e`
 
@@ -65,7 +66,7 @@ println(rowVec)
     * Get a cofactor matrix `val cofactorMat = mat.cofactorMatrix()`
     * Do a row switching operation `val newMat = mat.switchRow(rowIndex1, rowIndex2)`
     * Concat to another matrix `val concatMat = mat.concat(otherMat, dim)`
-    * Get a col/row vector-wise norm<sup>2</sup> array `val normMat = mat.colVecNormSq()`
+    * Get a col/row vector-wise norm<sup>2</sup> vector `val normVec = mat.colVecNormSq()`
     * Sum up all elements `val sum = mat.sum()`
     * Get an element-wise product `val newMat = mat1.eltwiseMul(mat2)`
     * Get a column-wise mean `val colWiseMeanVec = mat.columnWiseMean()`
@@ -78,6 +79,7 @@ println(rowVec)
     * Vector * Matrix
     * Matrix * Vector
     * vector * (Double, Long, Int, Float)
+    * vector / (Double, Long, Int, Float)
     * Get an element `val e = vec[i]`
     * Set an element `vec[i] = e`
 
