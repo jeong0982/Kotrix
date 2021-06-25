@@ -1,19 +1,19 @@
 # Matrix class for Kotlin
 ## How to initialize
-### With no data
+### Matrix
+#### With no data
 ```kotlin
 val mat = Matrix(4, 3)
 println(mat)
 ```
-#### result
 ```
 [ 0.0 0.0 0.0 ]
 [ 0.0 0.0 0.0 ]
 [ 0.0 0.0 0.0 ]
 [ 0.0 0.0 0.0 ]
 ```
-### With initial data
-#### Supports initialization with `DoubleArray` or `LongArray`
+#### With initial data
+Supports initialization with `DoubleArray` or `LongArray`.
 ```kotlin
 val mat = Matrix(4, 4, doubleArrayOf(
         1.0, 3.0, 5.0, 9.0,
@@ -23,12 +23,26 @@ val mat = Matrix(4, 4, doubleArrayOf(
     ))
 println(mat)
 ```
-#### result
 ```
 [ 1.0 3.0 5.0 9.0 ]
 [ 1.0 3.0 1.0 7.0 ]
 [ 4.0 3.0 9.0 7.0 ]
 [ 5.0 2.0 0.0 9.0 ]
+```
+### Vector
+Supports both column vector and row vector.
+```kotlin
+val colVec = ColumnVector(3)
+val rowVec = RowVector(3, doubleArrayof(1, 2, 3))
+println(colVec)
+println(rowVec)
+```
+```
+[ 0.0 ]
+[ 0.0 ]
+[ 0.0 ]
+
+[ 1.0 2.0 3.0 ]
 ```
 
 ## Supported operations

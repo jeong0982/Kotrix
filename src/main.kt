@@ -17,7 +17,9 @@ fun main(args: Array<String>) {
 //    val r = Random()
 //    val mat3 = Matrix(100, 100, DoubleArray(100*100) { r.nextDouble() })
 
-    val mat4 = Matrix(2, 2, longArrayOf(0, 1, 2, 3))
+//    val mat4 = Matrix(2, 2, longArrayOf(0, 1, 2, 3))
+    val colVec = ColumnVector(3)
+    val rowVec = RowVector(3)
 
 //    println(mat1)
 //    println(mat1 + mat2)
@@ -46,5 +48,6 @@ fun main(args: Array<String>) {
 //    println(mat2.sum())
 
 //    println(mat3.determinant())
-    println(mat4)
+    println(colVec)
+    println(rowVec)
 }

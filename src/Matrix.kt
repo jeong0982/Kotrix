@@ -1,7 +1,7 @@
 import kotlin.math.pow
 import kotlin.math.round
 
-class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleArray(rows * cols) { 0.0 }) {
+open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleArray(rows * cols) { 0.0 }) {
     companion object {
         fun identityMatrix(dim: Int) : Matrix {
             val newData = DoubleArray(dim * dim) {
@@ -290,4 +290,12 @@ class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleArray(r
         }
         return result
     }
+}
+
+class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : Matrix(size, 1, data) {
+    constructor(size: Int, data: LongArray) : this(size, DoubleArray(size) { data[it].toDouble() })
+}
+
+class RowVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}): Matrix(1, size, data) {
+    constructor(size: Int, data: LongArray) : this(size, DoubleArray(size) { data[it].toDouble() })
 }
