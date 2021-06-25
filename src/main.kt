@@ -1,3 +1,5 @@
+import java.util.*
+
 // Test
 fun main(args: Array<String>) {
     val mat1 = Matrix(4,4, doubleArrayOf(
@@ -12,6 +14,10 @@ fun main(args: Array<String>) {
         3.0, 4.0, 5.0, 6.0,
         4.0, 5.0, 6.0, 7.0
     ))
+//    val r = Random()
+//    val mat3 = Matrix(100, 100, DoubleArray(100*100) { r.nextDouble() })
+
+    val mat4 = Matrix(2, 2, longArrayOf(0, 1, 2, 3))
 
 //    println(mat1)
 //    println(mat1 + mat2)
@@ -38,4 +44,7 @@ fun main(args: Array<String>) {
 //    println(mat2.colVecNormSq())
 //    println(mat2.rowVecNormSq())
 //    println(mat2.sum())
+
+//    println(mat3.determinant())
+    println(mat4)
 }
