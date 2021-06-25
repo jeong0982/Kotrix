@@ -41,7 +41,7 @@ println(mat)
 * Set an element by `mat[i, j] = e`
 
 ### Additional operations
-* Construct an identity matrix by `val eye = Matrix.identityMatrix()`
+* Construct an identity matrix by `val eye = Matrix.identityMatrix(size)`
 * Transpose a matrix by `val matT = mat.transpose()`
 * Get a squared Frobenius norm by `val squaredNorm = mat.frobeniusNormSquared()`
 * Calculate a determinant( O(n<sup>3</sup>) ) by `val det = mat.determinant()`
