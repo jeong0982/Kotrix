@@ -18,8 +18,8 @@ fun main(args: Array<String>) {
 //    val mat3 = Matrix(100, 100, DoubleArray(100*100) { r.nextDouble() })
 
 //    val mat4 = Matrix(2, 2, longArrayOf(0, 1, 2, 3))
-    val colVec = ColumnVector(3)
-    val rowVec = RowVector(3)
+    val colVec = ColumnVector(3, doubleArrayOf(2.0, 3.0, 4.0))
+    val rowVec = RowVector(2, doubleArrayOf(1.0, 2.0))
 
 //    println(mat1)
 //    println(mat1 + mat2)
@@ -48,6 +48,11 @@ fun main(args: Array<String>) {
 //    println(mat2.sum())
 
 //    println(mat3.determinant())
-    println(colVec)
-    println(rowVec)
+//    println(colVec)
+//    println(rowVec)
+//    println(colVec.dotProduct(colVec))
+//    println(colVec.eltwiseMul(colVec))
+//    println(mat1.eltwiseMul(mat1))
+//    colVec.setSubvector(0,2,rowVec.transpose())
+//    println(colVec)
 }
