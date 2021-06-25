@@ -55,4 +55,7 @@ fun main(args: Array<String>) {
 //    println(mat1.eltwiseMul(mat1))
 //    colVec.setSubvector(0,2,rowVec.transpose())
 //    println(colVec)
+
+    println(colVec.replicate(3))
+    println(rowVec.replicate(5))
 }

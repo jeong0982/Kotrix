@@ -324,6 +324,26 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
         })
     }
 
+    fun rowWiseMean(): ColumnVector {
+        return ColumnVector(rows, DoubleArray(rows) {
+            var rowSum = 0.0
+            for (colIndex in 0 until cols) {
+                rowSum += this[it, colIndex]
+            }
+            rowSum / cols
+        })
+    }
+
+    fun columnWiseMean(): RowVector {
+        return RowVector(cols, DoubleArray(cols) {
+            var colSum = 0.0
+            for (rowIndex in 0 until rows) {
+                colSum += this[rowIndex, it]
+            }
+            colSum / rows
+        })
+    }
+
     override fun toString(): String {
         var result = ""
         for (i in 0 until rows) {
@@ -475,7 +495,15 @@ class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : 
             ))
         }
     }
+
+    fun replicate(length: Int): Matrix {
+        return Matrix(size, length, DoubleArray(size * length) {
+            val rowIndex = it / length
+            this[rowIndex]
+        })
+    }
 }
+
 
 class RowVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}): Matrix(1, size, data) {
     constructor(size: Int, data: LongArray) : this(size, DoubleArray(size) { data[it].toDouble() })
@@ -609,5 +637,12 @@ class RowVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}): Matr
                 this[0] * other[1] - this[1] * other[0]
             ))
         }
+    }
+
+    fun replicate(length: Int): Matrix {
+        return Matrix(length, size, DoubleArray(length * size) {
+            val colIndex = it % size
+            this[colIndex]
+        })
     }
 }
