@@ -13,7 +13,7 @@ println(mat)
 [ 0.0 0.0 0.0 ]
 ```
 ### With initial data
-#### Initialization with `DoubleArray` and `LongArray` are supported
+#### Supports initialization with `DoubleArray` or `LongArray`
 ```kotlin
 val mat = Matrix(4, 4, doubleArrayOf(
         1.0, 3.0, 5.0, 9.0,
