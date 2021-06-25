@@ -445,6 +445,8 @@ class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : 
     }
 
     fun dotProduct(other: ColumnVector): Double {
+        if (size != other.size)
+            throw IllegalArgumentException("ColumnVector.dotProduct: Both operands must have the same size")
         var sum = 0.0
         for (i in 0 until size) {
             sum += this[i] * other[i]
@@ -453,11 +455,25 @@ class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : 
     }
 
     fun dotProduct(other: RowVector): Double {
+        if (size != other.size)
+            throw IllegalArgumentException("ColumnVector.dotProduct: Both operands must have the same size")
         var sum = 0.0
         for (i in 0 until size) {
             sum += this[i] * other[i]
         }
         return sum
+    }
+
+    fun crossProduct(other: ColumnVector): ColumnVector {
+        if (size != 3 || other.size != 3)
+            throw IllegalArgumentException("ColumnVector.dotProduct: Both operands must be 3 dimensional vectors")
+        else {
+            return ColumnVector(size, doubleArrayOf(
+                this[1] * other[2] - this[2] * other[1],
+                this[2] * other[0] - this[0] * other[2],
+                this[0] * other[1] - this[1] * other[0]
+            ))
+        }
     }
 }
 
@@ -564,6 +580,8 @@ class RowVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}): Matr
     }
 
     fun dotProduct(other: RowVector): Double {
+        if (size != other.size)
+            throw IllegalArgumentException("RowVector.dotProduct: Both operands must have the same size")
         var sum = 0.0
         for (i in 0 until size) {
             sum += this[i] * other[i]
@@ -572,10 +590,24 @@ class RowVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}): Matr
     }
 
     fun dotProduct(other: ColumnVector): Double {
+        if (size != other.size)
+            throw IllegalArgumentException("RowVector.dotProduct: Both operands must have the same size")
         var sum = 0.0
         for (i in 0 until size) {
             sum += this[i] * other[i]
         }
         return sum
+    }
+
+    fun crossProduct(other: RowVector): RowVector {
+        if (size != 3 || other.size != 3)
+            throw IllegalArgumentException("ColumnVector.dotProduct: Both operands must be 3 dimensional vectors")
+        else {
+            return RowVector(size, doubleArrayOf(
+                this[1] * other[2] - this[2] * other[1],
+                this[2] * other[0] - this[0] * other[2],
+                this[0] * other[1] - this[1] * other[0]
+            ))
+        }
     }
 }

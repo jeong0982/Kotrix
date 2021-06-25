@@ -73,6 +73,8 @@ println(rowVec)
 * Basic operations
     * Vector + Vector
     * Vector - Vector
+    * Vector * Matrix
+    * Matrix * Vector
     * vector * (Double, Long, Int, Float)
     * Get an element by `val e = vec[i]`
     * Set an element by `vec[i] = e`
@@ -85,4 +87,6 @@ println(rowVec)
     * Concat to another matrix or vector by `val concatMat = vec.concat(otherMat, dim)`
     * Sum up all elements by `val sum = vec.sum()`
     * Get an element-wise product by `val newVec = vec1.eltwiseMul(vec2)`
+    * Outer product by `val mat = colVec * rowVec`
     * Dot product by `val dotProd = vec1.dotProduct(vec2)`
+    * Cross product by `val crossProdVec = vec1.crossProduct(vec2)`
