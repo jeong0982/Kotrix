@@ -47,7 +47,7 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
         }
     }
 
-    operator fun times(other: Matrix): Matrix {
+    open operator fun times(other: Matrix): Matrix {
         return if (cols != other.rows) {
             throw IllegalArgumentException("Matrix.times: Illegal Matrix multiplication.")
         } else {
@@ -61,6 +61,21 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
                 sum
             }
             Matrix(rows, other.cols, newData)
+        }
+    }
+
+    operator fun times(other: ColumnVector): ColumnVector {
+        return if (cols != other.size) {
+            throw IllegalArgumentException("Matrix.times: Illegal Matrix multiplication.")
+        } else {
+            val newData = DoubleArray(rows * 1) {
+                var sum = 0.0
+                for (i in 0 until this.cols) {
+                    sum += this[it, i] * other[i]
+                }
+                sum
+            }
+            ColumnVector(rows, newData)
         }
     }
 
@@ -561,6 +576,7 @@ class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : 
     }
 
     fun replicate(length: Int): Matrix {
+        if (length < 1) throw IllegalArgumentException("RowVector.replicate: length must be greater than 0.")
         return Matrix(size, length, DoubleArray(size * length) {
             val rowIndex = it / length
             this[rowIndex]
@@ -591,6 +607,21 @@ class RowVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}): Matr
                 data[it] - other.data[it]
             }
             RowVector(size, newData)
+        }
+    }
+
+    override operator fun times(other: Matrix): RowVector {
+        return if (size != other.rows) {
+            throw IllegalArgumentException("RowVector.times: Illegal Matrix multiplication.")
+        } else {
+            val newData = DoubleArray(other.cols) {
+                var sum = 0.0
+                for (i in 0 until size) {
+                    sum += this[i] * other[i, it]
+                }
+                sum
+            }
+            RowVector(other.cols, newData)
         }
     }
 
@@ -732,6 +763,7 @@ class RowVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}): Matr
     }
 
     fun replicate(length: Int): Matrix {
+        if (length < 1) throw IllegalArgumentException("RowVector.replicate: length must be greater than 0.")
         return Matrix(length, size, DoubleArray(length * size) {
             val colIndex = it % size
             this[colIndex]

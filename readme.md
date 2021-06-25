@@ -49,6 +49,7 @@ println(rowVec)
     * Matrix + Matrix
     * Matrix - Matrix
     * Matrix * Matrix
+    * Matrix * Vector
     * Matrix * (Double, Long, Int, Float)
     * Matrix / (Double, Long, Int, Float)
     * Get an element `val e = mat[i, j]`
@@ -77,7 +78,6 @@ println(rowVec)
     * Vector + Vector
     * Vector - Vector
     * Vector * Matrix
-    * Matrix * Vector
     * vector * (Double, Long, Int, Float)
     * vector / (Double, Long, Int, Float)
     * Get an element `val e = vec[i]`
