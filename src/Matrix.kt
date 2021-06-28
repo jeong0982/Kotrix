@@ -1,15 +1,63 @@
+import java.text.DecimalFormat
+import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.round
+import kotlin.math.sin
 
 open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleArray(rows * cols) { 0.0 }) {
     companion object {
-        fun identityMatrix(dim: Int) : Matrix {
+        fun identityMatrix(dim: Int): Matrix {
             val newData = DoubleArray(dim * dim) {
                 val rowIndex = it / dim
                 val colIndex = it % dim
                 if (rowIndex == colIndex) 1.0 else 0.0
             }
             return Matrix(dim, dim, newData)
+        }
+
+        fun zeros(n: Int, m: Int): Matrix {
+            return if (n < 1 || m < 1) throw IllegalArgumentException("Matrix.zeros: n, m must be positive integers")
+            else Matrix(n, m, DoubleArray(n * m) { 0.0 })
+        }
+
+        fun ones(n: Int, m: Int): Matrix {
+            return if (n < 1 || m < 1) throw IllegalArgumentException("Matrix.ones: n, m must be positive integers")
+            else Matrix(n, m, DoubleArray(n * m) { 1.0 })
+        }
+
+        fun rotationMatrix2d(theta: Double): Matrix {
+            return Matrix(2, 2, doubleArrayOf(
+                cos(theta), -sin(theta),
+                sin(theta), cos(theta)
+            ))
+        }
+
+        fun rotationMatrix3dX(theta: Double): Matrix {
+            return Matrix(3, 3, doubleArrayOf(
+                1.0,        0.0,            0.0,
+                0.0,        cos(theta),     -sin(theta),
+                0.0,        sin(theta),     cos(theta)
+            ))
+        }
+
+        fun rotationMatrix3dY(theta: Double): Matrix {
+            return Matrix(3, 3, doubleArrayOf(
+                cos(theta),     0.0,        sin(theta),
+                0.0,            1.0,        0.0,
+                -sin(theta),    0.0,        cos(theta)
+            ))
+        }
+
+        fun rotationMatrix3dZ(theta: Double): Matrix {
+            return Matrix(3, 3, doubleArrayOf(
+                cos(theta),     -sin(theta),    0.0,
+                sin(theta),     cos(theta),     0.0,
+                0.0,            0.0,            1.0
+            ))
+        }
+
+        fun eulerRotationMatrix3d(alpha: Double, beta: Double, gamma: Double): Matrix {
+            return rotationMatrix3dZ(alpha) * rotationMatrix3dX(beta) * rotationMatrix3dZ(gamma)
         }
     }
 
@@ -396,13 +444,24 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
     }
 
     override fun toString(): String {
+        val dec = DecimalFormat("#.00")
         var result = ""
         for (i in 0 until rows) {
             result += "[ "
             for (j in 0 until cols) {
-                result += (round((this[i, j] * 10)) / 10.0).toString() + " "
+                val value = this[i, j]
+                result += when {
+                    value >= 1000   -> " %.0f " .format(value)
+                    value >= 100    -> " %.0f. ".format(value)
+                    value >= 10     -> " %.1f " .format(value)
+                    value >= 0      -> " %.2f " .format(value)
+                    value > -10     ->  "%.2f " .format(value)
+                    value > -100    ->  "%.1f " .format(value)
+                    value > -1000   ->  "%.0f. ".format(value)
+                    else            ->  "%.0f " .format(value)
+                }
             }
-            result += "]\n"
+            result += " ]\n"
         }
         return result
     }

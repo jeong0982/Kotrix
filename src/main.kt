@@ -1,4 +1,5 @@
 import java.util.*
+import kotlin.math.PI
 
 // Test
 fun main(args: Array<String>) {
@@ -18,8 +19,8 @@ fun main(args: Array<String>) {
 //    val mat3 = Matrix(100, 100, DoubleArray(100*100) { r.nextDouble() })
 
 //    val mat4 = Matrix(2, 2, longArrayOf(0, 1, 2, 3))
-    val colVec = ColumnVector(3, doubleArrayOf(2.0, 3.0, 4.0))
-    val rowVec = RowVector(2, doubleArrayOf(1.0, 2.0))
+//    val colVec = ColumnVector(3, doubleArrayOf(2.0, 3.0, 4.0))
+//    val rowVec = RowVector(2, doubleArrayOf(1.0, 2.0))
 
 //    println(mat1)
 //    println(mat1 + mat2)
@@ -56,7 +57,10 @@ fun main(args: Array<String>) {
 //    colVec.setSubvector(0,2,rowVec.transpose())
 //    println(colVec)
 
-    println(colVec.replicate(3))
-    println(rowVec.replicate(5))
-    println(colVec * colVec.transpose())
+//    println(colVec.replicate(3))
+//    println(rowVec.replicate(5))
+//    println(colVec * colVec.transpose())
+
+    val rowVec = ColumnVector(8, doubleArrayOf(1.0, 10.0, 100.0, 1000.0, -1.0, -10.0, -100.0, -1000.0))
+    println(rowVec)
 }

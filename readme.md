@@ -6,10 +6,10 @@ val mat = Matrix(4, 3)
 println(mat)
 ```
 ```
-[ 0.0 0.0 0.0 ]
-[ 0.0 0.0 0.0 ]
-[ 0.0 0.0 0.0 ]
-[ 0.0 0.0 0.0 ]
+[  0.00  0.00  0.00  ]
+[  0.00  0.00  0.00  ]
+[  0.00  0.00  0.00  ]
+[  0.00  0.00  0.00  ]
 ```
 Supports initialization with `DoubleArray` `FloatArray`, `LongArray`, or `IntArray`.
 ```kotlin
@@ -22,25 +22,25 @@ val mat = Matrix(4, 4, doubleArrayOf(
 println(mat)
 ```
 ```
-[ 1.0 3.0 5.0 9.0 ]
-[ 1.0 3.0 1.0 7.0 ]
-[ 4.0 3.0 9.0 7.0 ]
-[ 5.0 2.0 0.0 9.0 ]
+[  1.00  3.00  5.00  9.00  ]
+[  1.00  3.00  1.00  7.00  ]
+[  4.00  3.00  9.00  7.00  ]
+[  5.00  2.00  0.00  9.00  ]
 ```
 ### Vector
 Supports both column vector and row vector.
 ```kotlin
 val colVec = ColumnVector(3)
-val rowVec = RowVector(3, doubleArrayof(1, 2, 3))
+val rowVec = RowVector(3, doubleArrayOf(1.0, 2.0, 3.0))
 println(colVec)
 println(rowVec)
 ```
 ```
-[ 0.0 ]
-[ 0.0 ]
-[ 0.0 ]
+[  0.00  ]
+[  0.00  ]
+[  0.00  ]
 
-[ 1.0 2.0 3.0 ]
+[  1.00  2.00  3.00  ]
 ```
 
 ## Supported operations
@@ -54,9 +54,18 @@ println(rowVec)
     * Matrix / (Double, Long, Int, Float)
     * Get an element `val e = mat[i, j]`
     * Set an element `mat[i, j] = e`
+  
+
+* Matrix creations
+    * Identity matrix `val eye = Matrix.identityMatrix(size)`
+    * Zero matrix `val zeros = Matrix.zeros(m, n)`
+    * Matrix of Ones `val ones = Matrix.ones(m, n)`
+    * 2d rotation matrix `val rotMat2d = Matrix.rotationMatrix2d(theta)`
+    * 3d rotation matrix along x/y/z axis `val rotMat3d = Matrix.rotationMatrix3dX/Y/Z(theta)`
+    * Euler rotation matrix (z-x'-z'' sequence) `val rotMatEuler = Matrix.eulerRotationMatrix(alpha, beta, gamma)`
+
 
 * Additional operations
-    * Construct an identity matrix `val eye = Matrix.identityMatrix(size)`
     * Transpose a matrix `val matT = mat.transpose()`
     * Get a squared Frobenius norm `val squaredNorm = mat.frobeniusNormSquared()`
     * Calculate a determinant( O(n<sup>3</sup>) ) `val det = mat.determinant()`
