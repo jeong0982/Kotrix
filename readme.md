@@ -27,6 +27,16 @@ println(mat)
 [  4.00  3.00  9.00  7.00  ]
 [  5.00  2.00  0.00  9.00  ]
 ```
+Supports initialization with a lambda function
+```kotlin
+val mat = Matrix(3, 3) { i, j -> i + j }
+println(mat)
+```
+```
+[  0.00  1.00  2.00  ]
+[  1.00  2.00  3.00  ]
+[  2.00  3.00  4.00  ]
+```
 ### Vector
 Supports both column vector and row vector.
 ```kotlin
@@ -41,6 +51,16 @@ println(rowVec)
 [  0.00  ]
 
 [  1.00  2.00  3.00  ]
+```
+Supports initialization with a lambda function
+```kotlin
+val vec = ColumnVector(3) { i -> i * i }
+println(vec)
+```
+```
+[  0.00  ]
+[  1.00  ]
+[  4.00  ]
 ```
 
 ## Supported operations

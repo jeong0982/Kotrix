@@ -73,6 +73,13 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
         rows2, cols2, DoubleArray(rows2 * cols2) { data2[it].toDouble() }
     )
 
+    constructor(rows2: Int, cols2: Int, lambda: (i: Int, j: Int) -> Number) : this(rows2, cols2,
+        DoubleArray(rows2 * cols2) {
+        val rowIndex = it / cols2
+        val colIndex = it % cols2
+        lambda(rowIndex, colIndex).toDouble()
+    })
+
     operator fun plus(other: Matrix): Matrix {
         return if (rows != other.rows || cols != other.cols) {
             throw IllegalArgumentException("Matrix.plus: Two matrices should have the same shape.")

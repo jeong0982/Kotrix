@@ -1,3 +1,7 @@
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+
 // Test
 fun main(args: Array<String>) {
     val mat1 = Matrix(4,4, doubleArrayOf(
@@ -58,11 +62,36 @@ fun main(args: Array<String>) {
 //    println(rowVec.replicate(5))
 //    println(colVec * colVec.transpose())
 
-    val colVec = ColumnVector(8, doubleArrayOf(1.0, 10.0, 100.0, 1000.0, -1.0, -10.0, -100.0, -1000.0))
-    println(8*colVec)
-    println(colVec/5)
+//    val colVec = ColumnVector(8, doubleArrayOf(1.0, 10.0, 100.0, 1000.0, -1.0, -10.0, -100.0, -1000.0))
+//    println(8*colVec)
+//    println(colVec/5)
+//
+//
+//    println(mat1 / 2.0)
+//    println(2.0 * mat1)
+//
+//    val alpha1 = PI / 4.0
+//    val beta1 = PI / 4.0
+//    val gamma1 = PI / 4.0
+//
+//    val error1 = Matrix(3, 3, doubleArrayOf(
+//        cos(alpha1) * cos(gamma1) - cos(beta1) * sin(alpha1) * sin(gamma1),
+//        -cos(alpha1) * sin(gamma1) - cos(beta1) * cos(gamma1) * sin(alpha1),
+//        sin(alpha1) * sin(beta1),
+//        cos(gamma1) * sin(alpha1) + cos(alpha1) * cos(beta1) * sin(gamma1),
+//        cos(alpha1) * cos(beta1) * cos(gamma1) - sin(alpha1) * sin(gamma1),
+//        -cos(alpha1) * sin(gamma1),
+//        sin(beta1) * sin(gamma1),
+//        cos(gamma1) * sin(beta1),
+//        cos(beta1)
+//    ))
+//    println(error1)
+//    println(Matrix.eulerRotationMatrix3d(alpha1, beta1, gamma1))
 
+//    val mat = Matrix(3, 3) { i, j -> i + j }
+//    println(mat)
 
-    println(mat1 / 2.0)
-    println(2.0 * mat1)
+    val vec = ColumnVector(3) { i -> i * i }
+    println(vec)
+
 }

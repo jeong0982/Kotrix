@@ -1,9 +1,12 @@
 class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : Matrix(size, 1, data) {
+
     constructor(size: Int, data: LongArray) : this(size, DoubleArray(size) { data[it].toDouble() })
 
     constructor(size: Int, data: FloatArray) : this(size, DoubleArray(size) { data[it].toDouble() })
 
     constructor(size: Int, data: IntArray) : this(size, DoubleArray(size) { data[it].toDouble() })
+
+    constructor (size: Int, lambda: (i: Int) -> Number) : this(size, DoubleArray(size) { lambda(it).toDouble() })
 
     operator fun plus(other: ColumnVector): ColumnVector {
         return if (size != other.size) {

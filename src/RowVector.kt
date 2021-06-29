@@ -1,5 +1,12 @@
 class RowVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}): Matrix(1, size, data) {
+
     constructor(size: Int, data: LongArray) : this(size, DoubleArray(size) { data[it].toDouble() })
+
+    constructor(size: Int, data: FloatArray) : this(size, DoubleArray(size) { data[it].toDouble() })
+
+    constructor(size: Int, data: IntArray) : this(size, DoubleArray(size) { data[it].toDouble() })
+
+    constructor (size: Int, lambda: (i: Int) -> Number) : this(size, DoubleArray(size) { lambda(it).toDouble() })
 
     operator fun plus(other: RowVector): RowVector {
         return if (size != other.size) {
