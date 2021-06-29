@@ -1,6 +1,3 @@
-import java.util.*
-import kotlin.math.PI
-
 // Test
 fun main(args: Array<String>) {
     val mat1 = Matrix(4,4, doubleArrayOf(
@@ -61,6 +58,11 @@ fun main(args: Array<String>) {
 //    println(rowVec.replicate(5))
 //    println(colVec * colVec.transpose())
 
-    val rowVec = ColumnVector(8, doubleArrayOf(1.0, 10.0, 100.0, 1000.0, -1.0, -10.0, -100.0, -1000.0))
-    println(rowVec)
+    val colVec = ColumnVector(8, doubleArrayOf(1.0, 10.0, 100.0, 1000.0, -1.0, -10.0, -100.0, -1000.0))
+    println(8*colVec)
+    println(colVec/5)
+
+
+    println(mat1 / 2.0)
+    println(2.0 * mat1)
 }
