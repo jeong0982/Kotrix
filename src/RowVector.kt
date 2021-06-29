@@ -8,6 +8,28 @@ class RowVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}): Matr
 
     constructor (size: Int, lambda: (i: Int) -> Number) : this(size, DoubleArray(size) { lambda(it).toDouble() })
 
+    operator fun get(index: Int): Double {
+        if (index < 0 || index >= size) {
+            throw IllegalArgumentException("RowVector.get: Index out of bound")
+        } else {
+            return data[index]
+        }
+    }
+
+    operator fun set(index: Int, value: Double) {
+        if (index < 0 || index >= size) {
+            throw IllegalArgumentException("RowVector.get: Index out of bound")
+        } else {
+            data[index] = value
+        }
+    }
+
+    override operator fun unaryPlus() = this
+
+    override operator fun unaryMinus(): RowVector {
+        return RowVector(size, DoubleArray(size) {- data[it]})
+    }
+
     operator fun plus(other: RowVector): RowVector {
         return if (size != other.size) {
             throw IllegalArgumentException("RowVector.plus: Two vectors should have the same size.")
@@ -59,19 +81,23 @@ class RowVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}): Matr
         return RowVector(size, newData)
     }
 
-    operator fun get(index: Int): Double {
-        if (index < 0 || index >= size) {
-            throw IllegalArgumentException("RowVector.get: Index out of bound")
+    operator fun plusAssign(other: RowVector) {
+        if (size != other.size) {
+            throw IllegalArgumentException("RowVector.plusAssign: Two vectors should have the same size.")
         } else {
-            return data[index]
+            for (i in 0 until size) {
+                data[i] += other.data[i]
+            }
         }
     }
 
-    operator fun set(index: Int, value: Double) {
-        if (index < 0 || index >= size) {
-            throw IllegalArgumentException("RowVector.get: Index out of bound")
+    operator fun minusAssign(other: RowVector) {
+        if (size != other.size) {
+            throw IllegalArgumentException("RowVector.plusAssign: Two vectors should have the same size.")
         } else {
-            data[index] = value
+            for (i in 0 until size) {
+                data[i] -= other.data[i]
+            }
         }
     }
 

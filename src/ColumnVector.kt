@@ -8,6 +8,28 @@ class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : 
 
     constructor (size: Int, lambda: (i: Int) -> Number) : this(size, DoubleArray(size) { lambda(it).toDouble() })
 
+    operator fun get(index: Int): Double {
+        if (index < 0 || index >= size) {
+            throw IllegalArgumentException("ColumnVector.get: Index out of bound")
+        } else {
+            return data[index]
+        }
+    }
+
+    operator fun set(index: Int, value: Double) {
+        if (index < 0 || index >= size) {
+            throw IllegalArgumentException("ColumnVector.get: Index out of bound")
+        } else {
+            data[index] = value
+        }
+    }
+
+    override operator fun unaryPlus() = this
+
+    override operator fun unaryMinus(): ColumnVector {
+        return ColumnVector(size, DoubleArray(size) {- data[it]})
+    }
+
     operator fun plus(other: ColumnVector): ColumnVector {
         return if (size != other.size) {
             throw IllegalArgumentException("ColumnVector.plus: Two vectors should have the same size.")
@@ -42,22 +64,6 @@ class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : 
             this[it] / other.toDouble()
         }
         return ColumnVector(size, newData)
-    }
-
-    operator fun get(index: Int): Double {
-        if (index < 0 || index >= size) {
-            throw IllegalArgumentException("ColumnVector.get: Index out of bound")
-        } else {
-            return data[index]
-        }
-    }
-
-    operator fun set(index: Int, value: Double) {
-        if (index < 0 || index >= size) {
-            throw IllegalArgumentException("ColumnVector.get: Index out of bound")
-        } else {
-            data[index] = value
-        }
     }
 
     override fun transpose(): RowVector {

@@ -5,61 +5,6 @@ import kotlin.math.round
 import kotlin.math.sin
 
 open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleArray(rows * cols) { 0.0 }) {
-    companion object {
-        fun identityMatrix(dim: Int): Matrix {
-            val newData = DoubleArray(dim * dim) {
-                val rowIndex = it / dim
-                val colIndex = it % dim
-                if (rowIndex == colIndex) 1.0 else 0.0
-            }
-            return Matrix(dim, dim, newData)
-        }
-
-        fun zeros(n: Int, m: Int): Matrix {
-            return if (n < 1 || m < 1) throw IllegalArgumentException("Matrix.zeros: n, m must be positive integers")
-            else Matrix(n, m, DoubleArray(n * m) { 0.0 })
-        }
-
-        fun ones(n: Int, m: Int): Matrix {
-            return if (n < 1 || m < 1) throw IllegalArgumentException("Matrix.ones: n, m must be positive integers")
-            else Matrix(n, m, DoubleArray(n * m) { 1.0 })
-        }
-
-        fun rotationMatrix2d(theta: Double): Matrix {
-            return Matrix(2, 2, doubleArrayOf(
-                cos(theta), -sin(theta),
-                sin(theta), cos(theta)
-            ))
-        }
-
-        fun rotationMatrix3dX(theta: Double): Matrix {
-            return Matrix(3, 3, doubleArrayOf(
-                1.0,        0.0,            0.0,
-                0.0,        cos(theta),     -sin(theta),
-                0.0,        sin(theta),     cos(theta)
-            ))
-        }
-
-        fun rotationMatrix3dY(theta: Double): Matrix {
-            return Matrix(3, 3, doubleArrayOf(
-                cos(theta),     0.0,        sin(theta),
-                0.0,            1.0,        0.0,
-                -sin(theta),    0.0,        cos(theta)
-            ))
-        }
-
-        fun rotationMatrix3dZ(theta: Double): Matrix {
-            return Matrix(3, 3, doubleArrayOf(
-                cos(theta),     -sin(theta),    0.0,
-                sin(theta),     cos(theta),     0.0,
-                0.0,            0.0,            1.0
-            ))
-        }
-
-        fun eulerRotationMatrix3d(alpha: Double, beta: Double, gamma: Double): Matrix {
-            return rotationMatrix3dZ(alpha) * rotationMatrix3dX(beta) * rotationMatrix3dZ(gamma)
-        }
-    }
 
     constructor(rows2: Int, cols2: Int, data2: LongArray) : this(
         rows2, cols2, DoubleArray(rows2 * cols2) { data2[it].toDouble() }
@@ -79,6 +24,28 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
         val colIndex = it % cols2
         lambda(rowIndex, colIndex).toDouble()
     })
+
+    operator fun get(rowIndex: Int, colIndex: Int) : Double {
+        if (rowIndex < 0 || colIndex < 0 || rowIndex >= rows || colIndex >= cols) {
+            throw IllegalArgumentException("Matrix.get: Index out of bound")
+        } else {
+            return data[rowIndex * cols + colIndex]
+        }
+    }
+
+    operator fun set(rowIndex: Int, colIndex: Int, value: Double){
+        if (rowIndex < 0 || colIndex < 0 || rowIndex >= rows || colIndex >= cols) {
+            throw IllegalArgumentException("Matrix.set: Index out of bound")
+        } else {
+            data[rowIndex * cols + colIndex] = value
+        }
+    }
+
+    open operator fun unaryPlus() = this
+
+    open operator fun unaryMinus(): Matrix {
+        return Matrix(rows, cols, DoubleArray(rows * cols) {- data[it]})
+    }
 
     operator fun plus(other: Matrix): Matrix {
         return if (rows != other.rows || cols != other.cols) {
@@ -152,19 +119,35 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
         return Matrix(rows, rows, newData)
     }
 
-    operator fun get(rowIndex: Int, colIndex: Int) : Double {
-        if (rowIndex < 0 || colIndex < 0 || rowIndex >= rows || colIndex >= cols) {
-            throw IllegalArgumentException("Matrix.get: Index out of bound")
+    operator fun plusAssign(other: Matrix) {
+        if (rows != other.rows || cols != other.cols) {
+            throw IllegalArgumentException("Matrix.plusAssign: Two matrices should have the same shape.")
         } else {
-            return data[rowIndex * cols + colIndex]
+            for (i in 0 until rows * cols) {
+                data[i] += other.data[i]
+            }
         }
     }
 
-    operator fun set(rowIndex: Int, colIndex: Int, value: Double){
-        if (rowIndex < 0 || colIndex < 0 || rowIndex >= rows || colIndex >= cols) {
-            throw IllegalArgumentException("Matrix.set: Index out of bound")
+    operator fun minusAssign(other: Matrix) {
+        if (rows != other.rows || cols != other.cols) {
+            throw IllegalArgumentException("Matrix.minusAssign: Two matrices should have the same shape.")
         } else {
-            data[rowIndex * cols + colIndex] = value
+            for (i in 0 until rows * cols) {
+                data[i] -= other.data[i]
+            }
+        }
+    }
+
+    operator fun timesAssign(other: Number) {
+        for (i in 0 until rows * cols) {
+            data[i] *= other.toDouble()
+        }
+    }
+
+    operator fun divAssign(other: Number) {
+        for (i in 0 until rows * cols) {
+            data[i] /= other.toDouble()
         }
     }
 
@@ -414,6 +397,7 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
                     value >= 1000   -> " %.0f " .format(value)
                     value >= 100    -> " %.0f. ".format(value)
                     value >= 10     -> " %.1f " .format(value)
+                    value == -0.0   -> " 0.00 "
                     value >= 0      -> " %.2f " .format(value)
                     value > -10     ->  "%.2f " .format(value)
                     value > -100    ->  "%.1f " .format(value)
@@ -424,6 +408,62 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
             result += " ]\n"
         }
         return result
+    }
+
+    companion object {
+        fun identityMatrix(dim: Int): Matrix {
+            val newData = DoubleArray(dim * dim) {
+                val rowIndex = it / dim
+                val colIndex = it % dim
+                if (rowIndex == colIndex) 1.0 else 0.0
+            }
+            return Matrix(dim, dim, newData)
+        }
+
+        fun zeros(n: Int, m: Int): Matrix {
+            return if (n < 1 || m < 1) throw IllegalArgumentException("Matrix.zeros: n, m must be positive integers")
+            else Matrix(n, m, DoubleArray(n * m) { 0.0 })
+        }
+
+        fun ones(n: Int, m: Int): Matrix {
+            return if (n < 1 || m < 1) throw IllegalArgumentException("Matrix.ones: n, m must be positive integers")
+            else Matrix(n, m, DoubleArray(n * m) { 1.0 })
+        }
+
+        fun rotationMatrix2d(theta: Double): Matrix {
+            return Matrix(2, 2, doubleArrayOf(
+                cos(theta), -sin(theta),
+                sin(theta), cos(theta)
+            ))
+        }
+
+        fun rotationMatrix3dX(theta: Double): Matrix {
+            return Matrix(3, 3, doubleArrayOf(
+                1.0,        0.0,            0.0,
+                0.0,        cos(theta),     -sin(theta),
+                0.0,        sin(theta),     cos(theta)
+            ))
+        }
+
+        fun rotationMatrix3dY(theta: Double): Matrix {
+            return Matrix(3, 3, doubleArrayOf(
+                cos(theta),     0.0,        sin(theta),
+                0.0,            1.0,        0.0,
+                -sin(theta),    0.0,        cos(theta)
+            ))
+        }
+
+        fun rotationMatrix3dZ(theta: Double): Matrix {
+            return Matrix(3, 3, doubleArrayOf(
+                cos(theta),     -sin(theta),    0.0,
+                sin(theta),     cos(theta),     0.0,
+                0.0,            0.0,            1.0
+            ))
+        }
+
+        fun eulerRotationMatrix3d(alpha: Double, beta: Double, gamma: Double): Matrix {
+            return rotationMatrix3dZ(alpha) * rotationMatrix3dX(beta) * rotationMatrix3dZ(gamma)
+        }
     }
 }
 

@@ -66,6 +66,7 @@ println(vec)
 ## Supported operations
 ### Matrix
 * Basic operations
+    * +Matrix, -Matrix
     * Matrix + Matrix
     * Matrix - Matrix
     * Matrix * Matrix
@@ -73,6 +74,10 @@ println(vec)
     * Matrix * (Double, Long, Int, Float)
     * (Double, Long, Int, Float) * Matrix
     * Matrix / (Double, Long, Int, Float)
+    * Matrix += Matrix
+    * Matrix -= Matrix
+    * Matrix *= (Double, Long, Int, Float)
+    * Matrix /= (Double, Long, Int, Float)
     * Get an element `val e = mat[i, j]`
     * Set an element `mat[i, j] = e`
   
@@ -106,12 +111,17 @@ println(vec)
 
 ### Vector
 * Basic operations
+    * +Vector, -Vector
     * Vector + Vector
     * Vector - Vector
     * Vector * Matrix
     * Vector * (Double, Long, Int, Float)
     * (Double, Long, Int, Float) * Vector
     * Vector / (Double, Long, Int, Float)
+    * Vector += Vector
+    * Vector -= Vector
+    * Vector *= (Double, Long, Int, Float)
+    * Vector /= (Double, Long, Int, Float)
     * Get an element `val e = vec[i]`
     * Set an element `vec[i] = e`
 
