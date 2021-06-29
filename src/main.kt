@@ -88,10 +88,10 @@ fun main(args: Array<String>) {
 //    println(error1)
 //    println(Matrix.eulerRotationMatrix3d(alpha1, beta1, gamma1))
 
-//    val mat = Matrix(3, 3) { i, j -> i + j }
-//    println(mat)
+    val mat = Matrix(3, 3) { i, j -> i + j }
+    println(mat.map { e -> sin(e) })
 
     val vec = ColumnVector(3) { i -> i * i }
-    println(vec)
+    println(vec.map {e -> cos(e)})
 
 }

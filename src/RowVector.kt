@@ -147,6 +147,12 @@ class RowVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}): Matr
             this[colIndex]
         })
     }
+
+    override fun map(lambda: (e: Double) -> Number): RowVector {
+        return RowVector(size, DoubleArray(size) {
+            lambda(this[it]).toDouble()
+        })
+    }
 }
 
 operator fun Number.times(other: RowVector): RowVector {

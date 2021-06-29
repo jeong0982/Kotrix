@@ -132,6 +132,12 @@ class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : 
             this[rowIndex]
         })
     }
+
+    override fun map(lambda: (e: Double) -> Number): ColumnVector {
+        return ColumnVector(size, DoubleArray(size) {
+            lambda(this[it]).toDouble()
+        })
+    }
 }
 
 operator fun Number.times(other: ColumnVector): ColumnVector {

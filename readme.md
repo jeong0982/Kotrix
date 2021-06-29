@@ -101,7 +101,8 @@ println(vec)
     * Sum up all elements `val sum = mat.sum()`
     * Get an element-wise product `val newMat = mat1.eltwiseMul(mat2)`
     * Get a column-wise mean `val colWiseMeanVec = mat.columnWiseMean()`
-    * Gen a row-wise mean `val rowWiseMeanVec = mat.rowWiseMean()` 
+    * Get a row-wise mean `val rowWiseMeanVec = mat.rowWiseMean()`
+    * Make a mapped matrix `val sinMat = mat.map {elem -> sin(elem)}`
 
 ### Vector
 * Basic operations
@@ -126,3 +127,4 @@ println(vec)
     * Dot product `val dotProd = vec1.dotProduct(vec2)`
     * Cross product `val crossProdVec = vec1.crossProduct(vec2)`
     * Replicate a vector to make a matrix `val mat = vec.replicate(length)`
+    * Make a mapped vector `val sinVec = vec.map {elem -> sin(elem)}`

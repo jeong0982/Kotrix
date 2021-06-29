@@ -396,6 +396,14 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
         })
     }
 
+    open fun map(lambda: (e: Double) -> Number): Matrix {
+        return Matrix(rows, cols, DoubleArray(rows * cols) {
+            val rowIndex = it / cols
+            val colIndex = it % cols
+            lambda(this[rowIndex, colIndex]).toDouble()
+        })
+    }
+
     override fun toString(): String {
         var result = ""
         for (i in 0 until rows) {
