@@ -6,7 +6,6 @@ There are three classes in this repository.
 `Tensor` class represents multidimensional tensors that can be added, subtracted, multiplied each other.  
 `Matrix` class, which inherits `Tensor`, represents matrices(i.e., 2-dimensional tensors).  
 Finally, `ColumnVector` and `RowVector` classes, which inherits `Matrix`, represent vectors.
----
 ## Class Initialization
 ### Tensor
 Supports initialization with `DoubleArray` `FloatArray`, `LongArray`, or `IntArray`.
