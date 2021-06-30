@@ -1,7 +1,5 @@
-import java.text.DecimalFormat
 import kotlin.math.cos
 import kotlin.math.pow
-import kotlin.math.round
 import kotlin.math.sin
 
 open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleArray(rows * cols) { 0.0 }) {
@@ -87,7 +85,7 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
     }
 
     operator fun times(other: ColumnVector): ColumnVector {
-        return if (cols != other.size) {
+        return if (cols != other.length) {
             throw IllegalArgumentException("Matrix.times: Illegal Matrix multiplication.")
         } else {
             val newData = DoubleArray(rows * 1) {

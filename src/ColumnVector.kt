@@ -1,15 +1,15 @@
-class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : Matrix(size, 1, data) {
+class ColumnVector(val length: Int, data: DoubleArray = DoubleArray(length){0.0}) : Matrix(length, 1, data) {
 
-    constructor(size: Int, data: LongArray) : this(size, DoubleArray(size) { data[it].toDouble() })
+    constructor(length: Int, data: LongArray) : this(length, DoubleArray(length) { data[it].toDouble() })
 
-    constructor(size: Int, data: FloatArray) : this(size, DoubleArray(size) { data[it].toDouble() })
+    constructor(length: Int, data: FloatArray) : this(length, DoubleArray(length) { data[it].toDouble() })
 
-    constructor(size: Int, data: IntArray) : this(size, DoubleArray(size) { data[it].toDouble() })
+    constructor(length: Int, data: IntArray) : this(length, DoubleArray(length) { data[it].toDouble() })
 
-    constructor (size: Int, lambda: (i: Int) -> Number) : this(size, DoubleArray(size) { lambda(it).toDouble() })
+    constructor (length: Int, lambda: (i: Int) -> Number) : this(length, DoubleArray(length) { lambda(it).toDouble() })
 
     operator fun get(index: Int): Double {
-        if (index < 0 || index >= size) {
+        if (index < 0 || index >= length) {
             throw IllegalArgumentException("ColumnVector.get: Index out of bound")
         } else {
             return data[index]
@@ -17,7 +17,7 @@ class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : 
     }
 
     operator fun set(index: Int, value: Double) {
-        if (index < 0 || index >= size) {
+        if (index < 0 || index >= length) {
             throw IllegalArgumentException("ColumnVector.get: Index out of bound")
         } else {
             data[index] = value
@@ -27,51 +27,51 @@ class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : 
     override operator fun unaryPlus() = this
 
     override operator fun unaryMinus(): ColumnVector {
-        return ColumnVector(size, DoubleArray(size) {- data[it]})
+        return ColumnVector(length, DoubleArray(length) {- data[it]})
     }
 
     operator fun plus(other: ColumnVector): ColumnVector {
-        return if (size != other.size) {
+        return if (length != other.length) {
             throw IllegalArgumentException("ColumnVector.plus: Two vectors should have the same size.")
         } else {
-            val newData = DoubleArray(size) {
+            val newData = DoubleArray(length) {
                 data[it] + other.data[it]
             }
-            ColumnVector(size, newData)
+            ColumnVector(length, newData)
         }
     }
 
     operator fun minus(other: ColumnVector): ColumnVector {
-        return if (size != other.size) {
+        return if (length != other.length) {
             throw IllegalArgumentException("ColumnVector.minus: Two vectors should have the same size.")
         } else {
-            val newData = DoubleArray(size) {
+            val newData = DoubleArray(length) {
                 data[it] - other.data[it]
             }
-            ColumnVector(size, newData)
+            ColumnVector(length, newData)
         }
     }
 
     override operator fun times(other: Number): ColumnVector {
-        val newData = DoubleArray(size) {
+        val newData = DoubleArray(length) {
             other.toDouble() * this[it]
         }
-        return ColumnVector(size, newData)
+        return ColumnVector(length, newData)
     }
 
     override operator fun div(other: Number): ColumnVector {
-        val newData = DoubleArray(size) {
+        val newData = DoubleArray(length) {
             this[it] / other.toDouble()
         }
-        return ColumnVector(size, newData)
+        return ColumnVector(length, newData)
     }
 
     override fun transpose(): RowVector {
-        return RowVector(size, data)
+        return RowVector(length, data)
     }
 
     fun getSubvector(indexStart: Int, indexEnd: Int): ColumnVector {
-        return if (indexStart < 0 || indexStart >= indexEnd || indexEnd > size) {
+        return if (indexStart < 0 || indexStart >= indexEnd || indexEnd > length) {
             throw IllegalArgumentException("ColumnVector.Subvector: Index out of bound")
         } else {
             val newSize = indexEnd - indexStart
@@ -84,7 +84,7 @@ class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : 
 
     fun setSubvector(indexStart: Int, indexEnd: Int, other: ColumnVector) {
         val newSize = indexEnd - indexStart
-        if (indexStart < 0 || indexStart >= indexEnd || indexEnd > size || newSize != other.size) {
+        if (indexStart < 0 || indexStart >= indexEnd || indexEnd > length || newSize != other.length) {
             throw IllegalArgumentException("ColumnVector.Subvector: Index out of bound")
         } else {
             other.data.forEachIndexed { index, element ->
@@ -94,36 +94,36 @@ class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : 
     }
 
     fun eltwiseMul(other: ColumnVector): ColumnVector {
-        if (size != other.size)
+        if (length != other.length)
             throw IllegalArgumentException("ColumnVector.eltwiseMul: Both operands must have the same size")
-        return ColumnVector(size, DoubleArray(size) { this[it] * other[it] })
+        return ColumnVector(length, DoubleArray(length) { this[it] * other[it] })
     }
 
     fun dotProduct(other: ColumnVector): Double {
-        if (size != other.size)
+        if (length != other.length)
             throw IllegalArgumentException("ColumnVector.dotProduct: Both operands must have the same size")
         var sum = 0.0
-        for (i in 0 until size) {
+        for (i in 0 until length) {
             sum += this[i] * other[i]
         }
         return sum
     }
 
     fun dotProduct(other: RowVector): Double {
-        if (size != other.size)
+        if (length != other.length)
             throw IllegalArgumentException("ColumnVector.dotProduct: Both operands must have the same size")
         var sum = 0.0
-        for (i in 0 until size) {
+        for (i in 0 until length) {
             sum += this[i] * other[i]
         }
         return sum
     }
 
     fun crossProduct(other: ColumnVector): ColumnVector {
-        if (size != 3 || other.size != 3)
+        if (length != 3 || other.length != 3)
             throw IllegalArgumentException("ColumnVector.dotProduct: Both operands must be 3 dimensional vectors")
         else {
-            return ColumnVector(size, doubleArrayOf(
+            return ColumnVector(length, doubleArrayOf(
                 this[1] * other[2] - this[2] * other[1],
                 this[2] * other[0] - this[0] * other[2],
                 this[0] * other[1] - this[1] * other[0]
@@ -133,22 +133,22 @@ class ColumnVector(val size: Int, data: DoubleArray = DoubleArray(size){0.0}) : 
 
     fun replicate(length: Int): Matrix {
         if (length < 1) throw IllegalArgumentException("RowVector.replicate: length must be greater than 0.")
-        return Matrix(size, length, DoubleArray(size * length) {
+        return Matrix(this.length, length, DoubleArray(this.length * length) {
             val rowIndex = it / length
             this[rowIndex]
         })
     }
 
     override fun map(lambda: (e: Double) -> Number): ColumnVector {
-        return ColumnVector(size, DoubleArray(size) {
+        return ColumnVector(length, DoubleArray(length) {
             lambda(this[it]).toDouble()
         })
     }
 }
 
 operator fun Number.times(other: ColumnVector): ColumnVector {
-    val newData = DoubleArray(other.size) {
+    val newData = DoubleArray(other.length) {
         this.toDouble() * other[it]
     }
-    return ColumnVector(other.size, newData)
+    return ColumnVector(other.length, newData)
 }
