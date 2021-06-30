@@ -387,6 +387,24 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
         })
     }
 
+    fun reshape(newRows: Int, newCols: Int): Matrix {
+        return when {
+            newRows >= 0 && newCols >= 0 -> {
+                if (newRows * newCols != rows * cols) throw IllegalArgumentException("Matrix.reshape: Invalid shape")
+                else Matrix(newRows, newCols, data)
+            }
+            newRows == -1 && newCols > 0 -> {
+                if ((rows * cols) % newCols != 0) throw IllegalArgumentException("Matrix.reshape: Invalid shape")
+                else Matrix((rows * cols) / newCols, newCols, data)
+            }
+            newRows > 0 && newCols == -1 -> {
+                if ((rows * cols) % newRows != 0) throw IllegalArgumentException("Matrix.reshape: Invalid shape")
+                else Matrix(newRows, (rows * cols) / newRows, data)
+            }
+            else -> throw IllegalArgumentException("Matrix.reshape: Invalid shape")
+        }
+    }
+
     override fun toString(): String {
         var result = ""
         for (i in 0 until rows) {

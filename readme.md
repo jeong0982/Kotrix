@@ -108,6 +108,7 @@ println(vec)
     * Get a column-wise mean `val colWiseMeanVec = mat.columnWiseMean()`
     * Get a row-wise mean `val rowWiseMeanVec = mat.rowWiseMean()`
     * Make a mapped matrix `val sinMat = mat.map {elem -> sin(elem)}`
+    * Reshape `val newMat = mat.reshape(3, -1)`
 
 ### Vector
 * Basic operations
@@ -138,3 +139,4 @@ println(vec)
     * Cross product `val crossProdVec = vec1.crossProduct(vec2)`
     * Replicate a vector to make a matrix `val mat = vec.replicate(length)`
     * Make a mapped vector `val sinVec = vec.map {elem -> sin(elem)}`
+    * Reshape `val newMat = vec.reshape(3, 2)`

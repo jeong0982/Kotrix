@@ -88,13 +88,12 @@ fun main(args: Array<String>) {
 //    println(error1)
 //    println(Matrix.eulerRotationMatrix3d(alpha1, beta1, gamma1))
 
-    val mat = Matrix(3, 3) { i, j -> i + j }
+    val mat = Matrix(3, 4) { i, j -> i + j }
     val matt = Matrix(3, 3) { _, _ -> 1 }
-    mat /= 100
-    println(mat)
+    println(mat.reshape(2, -1))
 
-    val vec = ColumnVector(3) { i -> i * i }
-    vec *= 3
-    println(vec)
+//    val vec = ColumnVector(3) { i -> i * i }
+//    vec *= 3
+//    println(vec)
 
 }
