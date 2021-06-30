@@ -14,6 +14,15 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
         if (size != calculateSize()) throw IllegalArgumentException("Tensor.init: Invalid data length")
     }
 
+    constructor(dim: Int, shape: IntArray, data: LongArray) :
+            this(dim, shape, DoubleArray(shape.reduce {tot, num -> tot * num}) { data[it].toDouble() })
+
+    constructor(dim: Int, shape: IntArray, data: FloatArray) :
+            this(dim, shape, DoubleArray(shape.reduce {tot, num -> tot * num}) { data[it].toDouble() })
+
+    constructor(dim: Int, shape: IntArray, data: IntArray) :
+            this(dim, shape, DoubleArray(shape.reduce {tot, num -> tot * num}) { data[it].toDouble() })
+
     open operator fun get(indices: IntArray): Double {
         if (indices.size != dim) throw IllegalArgumentException("Tensor.get: Too many indices")
         else {

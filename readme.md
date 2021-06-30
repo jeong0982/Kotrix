@@ -1,5 +1,42 @@
 # Matrix class for Kotlin
-## initialization
+## Introduction
+`Kotrix` is a set of classes that helps people dealing with linear algebra in `Kotlin`.
+
+There are three classes in this repository.
+`Tensor` class represents multidimensional tensors that can be added, subtracted, multiplied each other.  
+`Matrix` class, which inherits `Tensor`, represents matrices(i.e., 2-dimensional tensors).  
+Finally, `ColumnVector` and `RowVector` classes, which inherits `Matrix`, represent vectors.
+---
+## Class Initialization
+### Tensor
+Supports initialization with `DoubleArray` `FloatArray`, `LongArray`, or `IntArray`.
+```kotlin
+val tensor = Tensor(
+  dim = 6,
+  shape = intArrayOf(2, 2, 2, 2, 2, 2),
+  data = IntArray(64){ it }
+)
+println(tensor)
+```
+```
+[                                                                                      ]
+[  [                                      ]  [                                      ]  ]
+[  [  [  0.00  1.00  ]  [  4.00  5.00  ]  ]  [  [  16.0  17.0  ]  [  20.0  21.0  ]  ]  ]
+[  [  [  2.00  3.00  ]  [  6.00  7.00  ]  ]  [  [  18.0  19.0  ]  [  22.0  23.0  ]  ]  ]
+[  [                                      ]  [                                      ]  ]
+[  [  [  8.00  9.00  ]  [  12.0  13.0  ]  ]  [  [  24.0  25.0  ]  [  28.0  29.0  ]  ]  ]
+[  [  [  10.0  11.0  ]  [  14.0  15.0  ]  ]  [  [  26.0  27.0  ]  [  30.0  31.0  ]  ]  ]
+[  [                                      ]  [                                      ]  ]
+[                                                                                      ]
+[  [                                      ]  [                                      ]  ]
+[  [  [  32.0  33.0  ]  [  36.0  37.0  ]  ]  [  [  48.0  49.0  ]  [  52.0  53.0  ]  ]  ]
+[  [  [  34.0  35.0  ]  [  38.0  39.0  ]  ]  [  [  50.0  51.0  ]  [  54.0  55.0  ]  ]  ]
+[  [                                      ]  [                                      ]  ]
+[  [  [  40.0  41.0  ]  [  44.0  45.0  ]  ]  [  [  56.0  57.0  ]  [  60.0  61.0  ]  ]  ]
+[  [  [  42.0  43.0  ]  [  46.0  47.0  ]  ]  [  [  58.0  59.0  ]  [  62.0  63.0  ]  ]  ]
+[  [                                      ]  [                                      ]  ]
+[                                                                                      ]
+```
 ### Matrix
 ```kotlin
 val mat = Matrix(4, 3)
@@ -62,14 +99,36 @@ println(vec)
 [  1.00  ]
 [  4.00  ]
 ```
-
+---
 ## Supported operations
+### Tensor
+* Basic operations 
+    * +Tensor, -Tensor    *(Will be added)*
+    * Tensor + Tensor    *(Will be added)*
+    * Tensor - Tensor    *(Will be added)*
+    * Tensor * Tensor  (Tensor multiplication)    *(Will be added)*
+    * Tensor * Matrix    *(Will be added)*
+    * Tensor * Vector    *(Will be added)*
+    * Tensor * (Double, Long, Int, Float)    *(Will be added)*
+    * (Double, Long, Int, Float) * Tensor    *(Will be added)*
+    * Tensor / (Double, Long, Int, Float)    *(Will be added)*
+    * Tensor += Tensor    *(Will be added)*
+    * Tensor -= Tensor    *(Will be added)*
+    * Tensor *= (Double, Long, Int, Float)    *(Will be added)*
+    * Tensor /= (Double, Long, Int, Float)    *(Will be added)*
+    * Get the i-th tensor of the outermost dimension `val newTensor = tensor[i]`
+    * Get an element with a specific indices `val e = tensor[arrayOfIndices]`
+    * Set an element    *(Will be added)*
+  
+* Tensor creations    *(Will be added)*
+* Additional operations     *(Will be added)*
 ### Matrix
 * Basic operations
     * +Matrix, -Matrix
     * Matrix + Matrix
     * Matrix - Matrix
-    * Matrix * Matrix
+    * Matrix * Tensor
+    * Matrix * Matrix  (Matrix multiplication)
     * Matrix * Vector
     * Matrix * (Double, Long, Int, Float)
     * (Double, Long, Int, Float) * Matrix

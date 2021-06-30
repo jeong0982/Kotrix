@@ -283,7 +283,7 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
         }
     }
 
-    fun concat(other: Matrix, dim: Int = 1) : Matrix {
+    fun concat(other: Matrix, dim: Int) : Matrix {
         return when (dim) {
             0 -> {
                 if (cols != other.cols) throw IllegalArgumentException("Matrix.concat: number of columns does not match")
