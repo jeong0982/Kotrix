@@ -1,4 +1,4 @@
-class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
+open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
     DoubleArray(shape.reduce {
             total, num ->
             if (num <= 0) throw IllegalArgumentException("Tensor.init: Invalid shape")
@@ -14,7 +14,7 @@ class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
         if (size != calculateSize()) throw IllegalArgumentException("Tensor.init: Invalid data length")
     }
 
-    operator fun get(indices: IntArray): Double {
+    open operator fun get(indices: IntArray): Double {
         if (indices.size != dim) throw IllegalArgumentException("Tensor.get: Too many indices")
         else {
             val totalIndex = indices.reduceIndexed { index, acc, tensorIndex ->
@@ -25,7 +25,8 @@ class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
         }
     }
 
-    operator fun get(index: Int): Tensor {
+    open operator fun get(indexLong: Long): Tensor {
+        val index = indexLong.toInt()
         return when {
             index >= shape[0] -> throw IllegalArgumentException("Tensor.get: Index out of bound")
             dim == 0 -> throw IllegalArgumentException("Tensor.get: cannot get from 0-dimensional tensor. use [intArrayOf()] to get value.")
@@ -140,13 +141,13 @@ class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
                         val leftBracket = StringVector(leftBracketData)
                         val rightBracket = StringVector(rightBracketData)
                         val bodyStringVector = (1 until shape[0]).fold(
-                            (1 until shape[1]).fold(this[0][0].toStringVector()) { acc2, j ->
-                                acc2.concatHorizontal(this[0][j].toStringVector())
+                            (1 until shape[1]).fold(this[0L][0L].toStringVector()) { acc2, j ->
+                                acc2.concatHorizontal(this[0L][j.toLong()].toStringVector())
                             }
                         ) { acc1, i ->
                             acc1.concatVertical(
-                                (1 until shape[1]).fold(this[i][0].toStringVector()) { acc2, j ->
-                                    acc2.concatHorizontal(this[i][j].toStringVector())
+                                (1 until shape[1]).fold(this[i.toLong()][0L].toStringVector()) { acc2, j ->
+                                    acc2.concatHorizontal(this[i.toLong()][j.toLong()].toStringVector())
                                 }
                             )
                         }
@@ -172,8 +173,8 @@ class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
                         repeat(height) { leftBracketData.add("["); rightBracketData.add("]") }
                         val leftBracket = StringVector(leftBracketData)
                         val rightBracket = StringVector(rightBracketData)
-                        val bodyStringVector = (1 until shape[0]).fold(this[0].toStringVector()) { acc, i ->
-                            acc.concatHorizontal(this[i].toStringVector())
+                        val bodyStringVector = (1 until shape[0]).fold(this[0L].toStringVector()) { acc, i ->
+                            acc.concatHorizontal(this[i.toLong()].toStringVector())
                         }
                         val bodyUpperWidth = bodyStringVector.stringData[0].length
                         val bodyLowerWidth = bodyStringVector.stringData.last().length

@@ -97,6 +97,7 @@ fun main(args: Array<String>) {
 //    println(vec)
 
     val tensor = Tensor(6, intArrayOf(3,2,3,2,3,2), DoubleArray(216){it.toDouble()})
-    println(tensor)
+
+    println(mat1)
 
 }

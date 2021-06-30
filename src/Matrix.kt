@@ -2,7 +2,7 @@ import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
 
-open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleArray(rows * cols) { 0.0 }) {
+open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(rows * cols) { 0.0 }): Tensor(2, intArrayOf(rows, cols), data) {
 
     constructor(rows2: Int, cols2: Int, data2: LongArray) : this(
         rows2, cols2, DoubleArray(rows2 * cols2) { data2[it].toDouble() }
@@ -403,28 +403,28 @@ open class Matrix(val rows: Int, val cols: Int, val data: DoubleArray = DoubleAr
         }
     }
 
-    override fun toString(): String {
-        var result = ""
-        for (i in 0 until rows) {
-            result += "[ "
-            for (j in 0 until cols) {
-                val value = this[i, j]
-                result += when {
-                    value >= 1000   -> " %.0f " .format(value)
-                    value >= 100    -> " %.0f. ".format(value)
-                    value >= 10     -> " %.1f " .format(value)
-                    value == -0.0   -> " 0.00 "
-                    value >= 0      -> " %.2f " .format(value)
-                    value > -10     ->  "%.2f " .format(value)
-                    value > -100    ->  "%.1f " .format(value)
-                    value > -1000   ->  "%.0f. ".format(value)
-                    else            ->  "%.0f " .format(value)
-                }
-            }
-            result += " ]\n"
-        }
-        return result
-    }
+//    override fun toString(): String {
+//        var result = ""
+//        for (i in 0 until rows) {
+//            result += "[ "
+//            for (j in 0 until cols) {
+//                val value = this[i, j]
+//                result += when {
+//                    value >= 1000   -> " %.0f " .format(value)
+//                    value >= 100    -> " %.0f. ".format(value)
+//                    value >= 10     -> " %.1f " .format(value)
+//                    value == -0.0   -> " 0.00 "
+//                    value >= 0      -> " %.2f " .format(value)
+//                    value > -10     ->  "%.2f " .format(value)
+//                    value > -100    ->  "%.1f " .format(value)
+//                    value > -1000   ->  "%.0f. ".format(value)
+//                    else            ->  "%.0f " .format(value)
+//                }
+//            }
+//            result += " ]\n"
+//        }
+//        return result
+//    }
 
     companion object {
         fun identityMatrix(dim: Int): Matrix {
