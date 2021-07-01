@@ -39,9 +39,9 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
         }
     }
 
-    open operator fun unaryPlus() = this
+    override operator fun unaryPlus() = this
 
-    open operator fun unaryMinus(): Matrix {
+    override operator fun unaryMinus(): Matrix {
         return Matrix(rows, cols, DoubleArray(rows * cols) {- data[it]})
     }
 
@@ -402,29 +402,6 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
             else -> throw IllegalArgumentException("Matrix.reshape: Invalid shape")
         }
     }
-
-//    override fun toString(): String {
-//        var result = ""
-//        for (i in 0 until rows) {
-//            result += "[ "
-//            for (j in 0 until cols) {
-//                val value = this[i, j]
-//                result += when {
-//                    value >= 1000   -> " %.0f " .format(value)
-//                    value >= 100    -> " %.0f. ".format(value)
-//                    value >= 10     -> " %.1f " .format(value)
-//                    value == -0.0   -> " 0.00 "
-//                    value >= 0      -> " %.2f " .format(value)
-//                    value > -10     ->  "%.2f " .format(value)
-//                    value > -100    ->  "%.1f " .format(value)
-//                    value > -1000   ->  "%.0f. ".format(value)
-//                    else            ->  "%.0f " .format(value)
-//                }
-//            }
-//            result += " ]\n"
-//        }
-//        return result
-//    }
 
     companion object {
         fun identityMatrix(dim: Int): Matrix {

@@ -97,6 +97,13 @@ fun main(args: Array<String>) {
 //    println(vec)
 
     val tensor = Tensor(6, intArrayOf(2,2,2,2,2,2), IntArray(2*2*2*2*2*2){it})
-    println(tensor)
+    val tensor1 = Tensor(2, intArrayOf(2, 3), IntArray(2*3){it})
+    val tensor2 = Tensor(2, intArrayOf(3, 2), IntArray(2*3){it})
+    println(tensor1)
+    println()
+    println(tensor2)
+    println()
+    println(tensor2 * tensor)
+//    println(tensor[tensor.dataIndexToTensorIndices(36)])
 
 }

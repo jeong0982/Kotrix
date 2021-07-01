@@ -98,19 +98,18 @@ println(vec)
 [  1.00  ]
 [  4.00  ]
 ```
----
 ## Supported operations
 ### Tensor
 * Basic operations 
-    * +Tensor, -Tensor    *(Will be added)*
-    * Tensor + Tensor    *(Will be added)*
-    * Tensor - Tensor    *(Will be added)*
-    * Tensor * Tensor  (Tensor multiplication)    *(Will be added)*
-    * Tensor * Matrix    *(Will be added)*
-    * Tensor * Vector    *(Will be added)*
-    * Tensor * (Double, Long, Int, Float)    *(Will be added)*
-    * (Double, Long, Int, Float) * Tensor    *(Will be added)*
-    * Tensor / (Double, Long, Int, Float)    *(Will be added)*
+    * +Tensor, -Tensor
+    * Tensor + Tensor
+    * Tensor - Tensor
+    * Tensor * Tensor  (Tensor product with axis = 1)
+    * Tensor * Matrix
+    * Tensor * Vector
+    * Tensor * (Double, Long, Int, Float)
+    * (Double, Long, Int, Float) * Tensor
+    * Tensor / (Double, Long, Int, Float)
     * Tensor += Tensor    *(Will be added)*
     * Tensor -= Tensor    *(Will be added)*
     * Tensor *= (Double, Long, Int, Float)    *(Will be added)*

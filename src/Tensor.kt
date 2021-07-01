@@ -50,6 +50,90 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
         }
     }
 
+    open operator fun unaryPlus() = this
+
+    open operator fun unaryMinus(): Tensor {
+        return Tensor(dim, shape, DoubleArray(size) {- data[it]})
+    }
+
+    operator fun plus(other: Tensor): Tensor {
+        shape.forEachIndexed { index, it ->
+            if (it != other.shape[index]) throw IllegalArgumentException("Tensor.plus: Two tensors should have the same shape.")
+        }
+        val newData = DoubleArray(size) {
+            data[it] + other.data[it]
+        }
+        return Tensor(dim, shape, newData)
+    }
+
+    operator fun minus(other: Tensor): Tensor {
+        shape.forEachIndexed { index, it ->
+            if (it != other.shape[index]) throw IllegalArgumentException("Tensor.minus: Two tensors should have the same shape.")
+        }
+        val newData = DoubleArray(size) {
+            data[it] - other.data[it]
+        }
+        return Tensor(dim, shape, newData)
+    }
+
+    operator fun times(other: Tensor): Tensor {
+        return if (shape.last() != other.shape[0]) throw IllegalArgumentException("Tensor.times: Invalid tensor product.")
+        else {
+            val newDim = dim - 1 + other.dim - 1
+            val newShape = IntArray(newDim) {
+                when {
+                    it < dim - 1 -> shape[it]
+                    else -> other.shape[it - (dim - 1) + 1]
+                }
+            }
+            val newSize = newShape.reduce { tot, num -> tot * num }
+            val newData = DoubleArray(newSize) { dataIndex ->
+                val newIndices = dataIndexToTensorIndices(newShape, dataIndex)
+                var sum = 0.0
+                for (sumIndex in 0 until shape.last()) {
+                    val indices1 = IntArray(dim) {
+                        when {
+                            it < dim - 1 -> newIndices[it]
+                            else -> sumIndex
+                        }
+                    }
+                    val indices2 = IntArray(other.dim) {
+                        when (it) {
+                            0 -> sumIndex
+                            else -> newIndices[dim - 1 - 1 + it]
+                        }
+                    }
+                    sum += this[indices1] * other[indices2]
+                }
+                sum
+            }
+            Tensor(newDim, newShape, newData)
+        }
+    }
+
+    operator fun times(other: Number): Tensor {
+        val newData = DoubleArray(size) {
+            data[it] * other.toDouble()
+        }
+        return Tensor(dim, shape, newData)
+    }
+
+    operator fun div(other: Number): Tensor {
+        val newData = DoubleArray(size) {
+            data[it] / other.toDouble()
+        }
+        return Tensor(dim, shape, newData)
+    }
+
+    private fun dataIndexToTensorIndices(newShape: IntArray, dataIndex: Int): IntArray {
+        val retList = arrayListOf<Int>()
+        newShape.foldRight(dataIndex) { it, acc ->
+            retList.add(0, acc % it)
+            acc / it
+        }
+        return retList.toIntArray()
+    }
+
     private fun calculateSize(): Int {
         return shape.reduce {
                 total, num ->
