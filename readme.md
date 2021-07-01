@@ -110,16 +110,20 @@ println(vec)
     * Tensor * (Double, Long, Int, Float)
     * (Double, Long, Int, Float) * Tensor
     * Tensor / (Double, Long, Int, Float)
-    * Tensor += Tensor    *(Will be added)*
-    * Tensor -= Tensor    *(Will be added)*
-    * Tensor *= (Double, Long, Int, Float)    *(Will be added)*
-    * Tensor /= (Double, Long, Int, Float)    *(Will be added)*
-    * Get the i-th tensor of the outermost dimension `val newTensor = tensor[i]`
+    * Tensor += Tensor
+    * Tensor -= Tensor
+    * Tensor *= (Double, Long, Int, Float)
+    * Tensor /= (Double, Long, Int, Float)
+    * Get the i-th tensor of the outermost dimension `val newTensor = tensor[i: Long]`
     * Get an element with a specific indices `val e = tensor[arrayOfIndices]`
-    * Set an element    *(Will be added)*
+    * Set an element `tensor[arrayOfIndices] = value`
   
 * Tensor creations    *(Will be added)*
-* Additional operations     *(Will be added)*
+* Additional operations
+  * Downcast to `Matrix` class
+  * Reshape     *(Will be added)*
+  * Concat     *(Will be added)*
+  * Stack     *(Will be added)*
 ### Matrix
 * Basic operations
     * +Matrix, -Matrix

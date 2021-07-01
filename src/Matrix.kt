@@ -31,11 +31,11 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
         }
     }
 
-    operator fun set(rowIndex: Int, colIndex: Int, value: Double){
+    operator fun set(rowIndex: Int, colIndex: Int, value: Number) {
         if (rowIndex < 0 || colIndex < 0 || rowIndex >= rows || colIndex >= cols) {
             throw IllegalArgumentException("Matrix.set: Index out of bound")
         } else {
-            data[rowIndex * cols + colIndex] = value
+            data[rowIndex * cols + colIndex] = value.toDouble()
         }
     }
 
@@ -99,7 +99,7 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
         }
     }
 
-    open operator fun times(other: Number): Matrix {
+    override operator fun times(other: Number): Matrix {
         val newData = DoubleArray(rows * cols) {
             val rowIndex = it / cols
             val colIndex = it % cols
@@ -108,45 +108,13 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
         return Matrix(rows, rows, newData)
     }
 
-    open operator fun div(other: Number): Matrix {
+    override operator fun div(other: Number): Matrix {
         val newData = DoubleArray(rows * cols) {
             val rowIndex = it / cols
             val colIndex = it % cols
             this[rowIndex, colIndex] / other.toDouble()
         }
         return Matrix(rows, rows, newData)
-    }
-
-    operator fun plusAssign(other: Matrix) {
-        if (rows != other.rows || cols != other.cols) {
-            throw IllegalArgumentException("Matrix.plusAssign: Two matrices should have the same shape.")
-        } else {
-            for (i in 0 until rows * cols) {
-                data[i] += other.data[i]
-            }
-        }
-    }
-
-    operator fun minusAssign(other: Matrix) {
-        if (rows != other.rows || cols != other.cols) {
-            throw IllegalArgumentException("Matrix.minusAssign: Two matrices should have the same shape.")
-        } else {
-            for (i in 0 until rows * cols) {
-                data[i] -= other.data[i]
-            }
-        }
-    }
-
-    operator fun timesAssign(other: Number) {
-        for (i in 0 until rows * cols) {
-            data[i] *= other.toDouble()
-        }
-    }
-
-    operator fun divAssign(other: Number) {
-        for (i in 0 until rows * cols) {
-            data[i] /= other.toDouble()
-        }
     }
 
     open fun transpose(): Matrix {

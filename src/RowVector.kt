@@ -81,26 +81,6 @@ class RowVector(val length: Int, data: DoubleArray = DoubleArray(length){0.0}): 
         return RowVector(length, newData)
     }
 
-    operator fun plusAssign(other: RowVector) {
-        if (length != other.length) {
-            throw IllegalArgumentException("RowVector.plusAssign: Two vectors should have the same size.")
-        } else {
-            for (i in 0 until length) {
-                data[i] += other.data[i]
-            }
-        }
-    }
-
-    operator fun minusAssign(other: RowVector) {
-        if (length != other.length) {
-            throw IllegalArgumentException("RowVector.plusAssign: Two vectors should have the same size.")
-        } else {
-            for (i in 0 until length) {
-                data[i] -= other.data[i]
-            }
-        }
-    }
-
     override fun transpose(): ColumnVector {
         return ColumnVector(length, data)
     }

@@ -23,18 +23,12 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
     constructor(dim: Int, shape: IntArray, data: IntArray) :
             this(dim, shape, DoubleArray(shape.reduce {tot, num -> tot * num}) { data[it].toDouble() })
 
-    open operator fun get(indices: IntArray): Double {
-        if (indices.size != dim) throw IllegalArgumentException("Tensor.get: Too many indices")
-        else {
-            val totalIndex = indices.reduceIndexed { index, acc, tensorIndex ->
-                if (tensorIndex >= shape[index]) throw IllegalArgumentException("Tensor.get: Index out of bound")
-                (acc * shape[index]) + tensorIndex
-            }
-            return data[totalIndex]
-        }
+    operator fun get(indices: IntArray): Double {
+        return if (indices.size != dim) throw IllegalArgumentException("Tensor.get: Too many indices")
+        else data[tensorIndicesToDataIndex(shape, indices)]
     }
 
-    open operator fun get(indexLong: Long): Tensor {
+    operator fun get(indexLong: Long): Tensor {
         val index = indexLong.toInt()
         return when {
             index >= shape[0] -> throw IllegalArgumentException("Tensor.get: Index out of bound")
@@ -48,6 +42,13 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
                 Tensor(dim - 1, newShape, newData)
             }
         }
+    }
+
+    operator fun set(indices: IntArray, value: Number) {
+        indices.forEachIndexed { index, it ->
+            if (it < 0 || it >= shape[index]) throw IllegalArgumentException("Tensor.set: Index out of bound")
+        }
+        data[tensorIndicesToDataIndex(shape, indices)] = value.toDouble()
     }
 
     open operator fun unaryPlus() = this
@@ -111,18 +112,53 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
         }
     }
 
-    operator fun times(other: Number): Tensor {
+    open operator fun times(other: Number): Tensor {
         val newData = DoubleArray(size) {
             data[it] * other.toDouble()
         }
         return Tensor(dim, shape, newData)
     }
 
-    operator fun div(other: Number): Tensor {
+    open operator fun div(other: Number): Tensor {
         val newData = DoubleArray(size) {
             data[it] / other.toDouble()
         }
         return Tensor(dim, shape, newData)
+    }
+
+    operator fun plusAssign(other: Tensor) {
+        shape.forEachIndexed { index, it ->
+            if (it != other.shape[index]) throw IllegalArgumentException("Tensor.plus: Two tensors should have the same shape.")
+        }
+        for(i in 0 until size) {
+            data[i] += other.data[i]
+        }
+    }
+
+    operator fun minusAssign(other: Tensor) {
+        shape.forEachIndexed { index, it ->
+            if (it != other.shape[index]) throw IllegalArgumentException("Tensor.plus: Two tensors should have the same shape.")
+        }
+        for(i in 0 until size) {
+            data[i] -= other.data[i]
+        }
+    }
+
+    operator fun timesAssign(other: Number) {
+        for (i in 0 until size) {
+            data[i] *= other.toDouble()
+        }
+    }
+
+    operator fun divAssign(other: Number) {
+        for (i in 0 until size) {
+            data[i] /= other.toDouble()
+        }
+    }
+
+    fun toMatrix(): Matrix {
+        if (dim != 2) throw IllegalStateException("Tensor.toMatrix: must be a 2 dimensional tensor, not $dim.")
+        return Matrix(shape[0], shape[1], data)
     }
 
     private fun dataIndexToTensorIndices(newShape: IntArray, dataIndex: Int): IntArray {
@@ -132,6 +168,13 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
             acc / it
         }
         return retList.toIntArray()
+    }
+
+    private fun tensorIndicesToDataIndex(newShape: IntArray, tensorIndices: IntArray): Int {
+        return tensorIndices.reduceIndexed { index, acc, tensorIndex ->
+            if (tensorIndex >= newShape[index]) throw IllegalArgumentException("Tensor.tensorIndicesToDataIndex: Index out of bound")
+            (acc * newShape[index]) + tensorIndex
+        }
     }
 
     private fun calculateSize(): Int {
