@@ -197,6 +197,24 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
         return this.reshape(intArrayOf(-1)).toMatrix().toRowVector()
     }
 
+    private fun stackSuppl(other: Tensor): Tensor {
+        return when (dim-other.dim) {
+            0 -> {
+                other.shape.forEachIndexed {index, it ->
+                    if (this.shape[index] != it) throw IllegalArgumentException("Tensor.stack: Cannot stack tensors with different shape")
+                }
+                Tensor(dim + 1, intArrayOf(2) + other.shape, data + other.data)
+            }
+            1 -> {
+                other.shape.forEachIndexed { index, it ->
+                    if (this.shape[index + 1] != it) throw IllegalArgumentException("Tensor.stack: Cannot stack tensors with different shape")
+                }
+                Tensor(dim, intArrayOf(shape[0]+1) + other.shape, data + other.data)
+            }
+            else -> throw IllegalArgumentException("Tensor.stack: Cannot stack tensors with different shape")
+        }
+    }
+
     private fun dataIndexToTensorIndices(newShape: IntArray, dataIndex: Int): IntArray {
         val retList = arrayListOf<Int>()
         newShape.foldRight(dataIndex) { it, acc ->
@@ -365,5 +383,12 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
 
     override fun toString(): String {
         return toStringVector().toString() + "\n"
+    }
+
+    companion object {
+        fun stack(tensors: Iterable<Tensor>): Tensor {
+            val init = tensors.elementAt(0)
+            return tensors.fold(init) { acc, tensor -> acc.stackSuppl(tensor) }
+        }
     }
 }

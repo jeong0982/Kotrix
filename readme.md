@@ -125,7 +125,7 @@ println(vec)
     * Reshape `val newTensor = tensor.reshape(newShape)`
     * Flatten `val rowVector = tensor.flatten()`
     * Concat     *(Will be added)*
-    * Stack     *(Will be added)*
+    * Stack tensors to make a new tensor with one bigger dimension.`val stackTensor = Tensor.stack(tensors)`
 ### Matrix
 * Basic operations
     * +Matrix, -Matrix
