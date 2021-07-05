@@ -371,6 +371,16 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
         }
     }
 
+    fun toRowVector(): RowVector {
+        if (rows != 1) throw IllegalStateException("Matrix.toRowVector: Cannot downcast to RowVector")
+        return RowVector(cols, data)
+    }
+
+    fun toColVector(): ColumnVector {
+        if (cols != 1) throw IllegalStateException("Matrix.toColVector: Cannot downcast to ColumnVector")
+        return ColumnVector(rows, data)
+    }
+
     companion object {
         fun identityMatrix(dim: Int): Matrix {
             val newData = DoubleArray(dim * dim) {

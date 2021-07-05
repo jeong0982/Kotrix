@@ -96,7 +96,7 @@ fun main(args: Array<String>) {
 //    vec *= 3
 //    println(vec)
 
-//    val tensor = Tensor(6, intArrayOf(2,2,2,2,2,2), IntArray(2*2*2*2*2*2){it})
+    val tensor = Tensor(6, intArrayOf(2,2,2,2,2,2), IntArray(2*2*2*2*2*2){it})
 //    val tensor1 = Tensor(2, intArrayOf(2, 3), IntArray(2*3){it})
 //    val tensor2 = Tensor(2, intArrayOf(3, 2), IntArray(2*3){it})
 //    println(tensor1)
@@ -105,13 +105,15 @@ fun main(args: Array<String>) {
 //    println()
 //    println(tensor2 * tensor)
 
-    println(mat1)
+//    println(mat1)
 //    println()
 //    println(mat2)
-    mat1 *= 2
-    println()
-    mat1[intArrayOf(2,2)] = 123
-    println(mat1[intArrayOf(2,2)])
+//    mat1 *= 2
+//    println()
+//    mat1[intArrayOf(2,2)] = 123
+//    println(mat1[intArrayOf(2,2)])
 //    println(tensor[tensor.dataIndexToTensorIndices(36)])
+    println(tensor)
+    println(tensor.flatten())
 
 }

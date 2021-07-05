@@ -118,12 +118,14 @@ println(vec)
     * Get an element with a specific indices `val e = tensor[arrayOfIndices]`
     * Set an element `tensor[arrayOfIndices] = value`
   
-* Tensor creations    *(Will be added)*
+* Tensor creations    
+    * *(Will be added)*
 * Additional operations
-  * Downcast to `Matrix` class
-  * Reshape     *(Will be added)*
-  * Concat     *(Will be added)*
-  * Stack     *(Will be added)*
+    * Downcast to `Matrix` class
+    * Reshape `val newTensor = tensor.reshape(newShape)`
+    * Flatten `val rowVector = tensor.flatten()`
+    * Concat     *(Will be added)*
+    * Stack     *(Will be added)*
 ### Matrix
 * Basic operations
     * +Matrix, -Matrix
@@ -170,6 +172,8 @@ println(vec)
     * Get a row-wise mean `val rowWiseMeanVec = mat.rowWiseMean()`
     * Make a mapped matrix `val sinMat = mat.map {elem -> sin(elem)}`
     * Reshape `val newMat = mat.reshape(3, -1)`
+    * Downcast to `RowVector` class
+    * Downcast to `ColumnVector` class
 
 ### Vector
 * Basic operations

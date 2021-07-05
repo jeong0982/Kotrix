@@ -157,8 +157,44 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
     }
 
     fun toMatrix(): Matrix {
-        if (dim != 2) throw IllegalStateException("Tensor.toMatrix: must be a 2 dimensional tensor, not $dim.")
-        return Matrix(shape[0], shape[1], data)
+        return when (dim) {
+            1 -> {
+                Matrix(1, shape[0], data)
+            }
+            2 -> {
+                Matrix(shape[0], shape[1], data)
+            }
+            else -> throw IllegalStateException("Tensor.toMatrix: must be a 2 dimensional tensor, not $dim.")
+        }
+    }
+
+    fun reshape(newShape: IntArray): Tensor {
+        var negOneIndex = -1
+        var negOneCount = 0
+        var acc = 1
+        newShape.forEachIndexed { index, it ->
+            when {
+                it == -1 -> {
+                    negOneCount++
+                    negOneIndex = index
+                }
+                it > 0 -> {
+                    acc *= it
+                    if (size % acc != 0) throw IllegalArgumentException("Tensor.reshape: invalid shape input")
+                }
+                else -> throw IllegalArgumentException("Tensor.reshape: invalid shape input")
+            }
+        }
+        if (negOneCount > 0) {
+            newShape[negOneIndex] = size / acc
+        }
+
+        val newDim = newShape.size
+        return Tensor(newDim, newShape, data)
+    }
+
+    fun flatten(): RowVector {
+        return this.reshape(intArrayOf(-1)).toMatrix().toRowVector()
     }
 
     private fun dataIndexToTensorIndices(newShape: IntArray, dataIndex: Int): IntArray {
@@ -328,6 +364,6 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
     }
 
     override fun toString(): String {
-        return toStringVector().toString()
+        return toStringVector().toString() + "\n"
     }
 }
