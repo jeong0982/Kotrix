@@ -301,17 +301,7 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
                 var data = "[ "
                 for (i in 0 until shape[0]) {
                     val value = this[intArrayOf(i)]
-                    data += when {
-                        value >= 1000 -> " %.0f ".format(value)
-                        value >= 100 -> " %.0f. ".format(value)
-                        value >= 10 -> " %.1f ".format(value)
-                        value == -0.0 -> " 0.00 "
-                        value >= 0 -> " %.2f ".format(value)
-                        value > -10 -> "%.2f ".format(value)
-                        value > -100 -> "%.1f ".format(value)
-                        value > -1000 -> "%.0f. ".format(value)
-                        else -> "%.0f ".format(value)
-                    }
+                    data += value.toFormattedString()
                 }
                 data += " ]"
                 stringData.add(data)
@@ -323,17 +313,7 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
                     var data = "[ "
                     for (j in 0 until shape[1]) {
                         val value = this[intArrayOf(i, j)]
-                        data += when {
-                            value >= 1000   -> " %.0f " .format(value)
-                            value >= 100    -> " %.0f. ".format(value)
-                            value >= 10     -> " %.1f " .format(value)
-                            value == -0.0   -> " 0.00 "
-                            value >= 0      -> " %.2f " .format(value)
-                            value > -10     ->  "%.2f " .format(value)
-                            value > -100    ->  "%.1f " .format(value)
-                            value > -1000   ->  "%.0f. ".format(value)
-                            else            ->  "%.0f " .format(value)
-                        }
+                        data += value.toFormattedString()
                     }
                     data += " ]"
                     stringData.add(data)
@@ -423,4 +403,19 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
 operator fun Number.times(other: Tensor): Tensor {
     val newData = DoubleArray(other.size) { other.data[it] * this.toDouble() }
     return Tensor(other.shape, newData)
+}
+
+fun Number.toFormattedString(): String {
+    val thisToDouble = this.toDouble()
+    return when {
+        thisToDouble >= 1000 -> " %.0f ".format(thisToDouble)
+        thisToDouble >= 100 -> " %.0f. ".format(thisToDouble)
+        thisToDouble >= 10 -> " %.1f ".format(thisToDouble)
+        thisToDouble == -0.0 -> " 0.00 "
+        thisToDouble >= 0 -> " %.2f ".format(thisToDouble)
+        thisToDouble > -10 -> "%.2f ".format(thisToDouble)
+        thisToDouble > -100 -> "%.1f ".format(thisToDouble)
+        thisToDouble > -1000 -> "%.0f. ".format(thisToDouble)
+        else -> "%.0f ".format(thisToDouble)
+    }
 }

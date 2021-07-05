@@ -117,10 +117,16 @@ fun main(args: Array<String>) {
 //    println(tensor3)
 //    println(Tensor.stack(arrayListOf(tensor3, tensor3, tensor3)))
 
-    val tensor4 = Tensor(intArrayOf(2,2,2), IntArray(8) {it})
-    val tensor5 = Tensor(intArrayOf(3,2,2), IntArray(12) {-it})
+//    val tensor4 = Tensor(intArrayOf(2,2,2), IntArray(8) {it})
+//    val tensor5 = Tensor(intArrayOf(3,2,2), IntArray(12) {-it})
+//
+//    println(tensor4)
+//    println(tensor5)
+//    println(tensor4.concat(tensor5, 0))
 
-    println(tensor4)
-    println(tensor5)
-    println(tensor4.concat(tensor5, 0))
+    val z1 = ComplexDouble(1, 1)
+    val z2 = ComplexDouble(1, -1)
+    println(z1)
+    println(z2)
+    println(z1 / z2)
 }
