@@ -11,7 +11,6 @@ Finally, `ColumnVector` and `RowVector` classes, which inherits `Matrix`, repres
 Supports initialization with `DoubleArray` `FloatArray`, `LongArray`, or `IntArray`.
 ```kotlin
 val tensor = Tensor(
-  dim = 6,
   shape = intArrayOf(2, 2, 2, 2, 2, 2),
   data = IntArray(64){ it }
 )
@@ -124,7 +123,7 @@ println(vec)
     * Downcast to `Matrix` class
     * Reshape `val newTensor = tensor.reshape(newShape)`
     * Flatten `val rowVector = tensor.flatten()`
-    * Concat     *(Will be added)*
+    * Concat `val newTensor = tensor1.concat(tensor2, concatDim)`
     * Stack tensors to make a new tensor with one bigger dimension.`val stackTensor = Tensor.stack(tensors)`
 ### Matrix
 * Basic operations

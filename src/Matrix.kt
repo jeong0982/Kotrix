@@ -2,7 +2,7 @@ import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
 
-open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(rows * cols) { 0.0 }): Tensor(2, intArrayOf(rows, cols), data) {
+open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(rows * cols) { 0.0 }): Tensor(intArrayOf(rows, cols), data) {
 
     constructor(rows2: Int, cols2: Int, data2: LongArray) : this(
         rows2, cols2, DoubleArray(rows2 * cols2) { data2[it].toDouble() }

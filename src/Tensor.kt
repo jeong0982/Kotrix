@@ -1,4 +1,4 @@
-open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
+open class Tensor(val shape: IntArray, val data: DoubleArray =
     DoubleArray(shape.reduce {
             total, num ->
             if (num <= 0) throw IllegalArgumentException("Tensor.init: Invalid shape")
@@ -7,21 +7,22 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
     )
 ) {
     val size: Int = data.size
+    val dim: Int = shape.size
 
     init {
         if (dim < 0) throw IllegalArgumentException("Tensor.init: dimension must be a non-negative integer")
         if (shape.size != dim) throw IllegalArgumentException("Tensor.init: shape.size != dim")
-        if (size != calculateSize()) throw IllegalArgumentException("Tensor.init: Invalid data length")
+        if (size != calculateSize(shape)) throw IllegalArgumentException("Tensor.init: Invalid data length")
     }
 
-    constructor(dim: Int, shape: IntArray, data: LongArray) :
-            this(dim, shape, DoubleArray(shape.reduce {tot, num -> tot * num}) { data[it].toDouble() })
+    constructor(shape: IntArray, data: LongArray) :
+            this(shape, DoubleArray(shape.reduce {tot, num -> tot * num}) { data[it].toDouble() })
 
-    constructor(dim: Int, shape: IntArray, data: FloatArray) :
-            this(dim, shape, DoubleArray(shape.reduce {tot, num -> tot * num}) { data[it].toDouble() })
+    constructor(shape: IntArray, data: FloatArray) :
+            this(shape, DoubleArray(shape.reduce {tot, num -> tot * num}) { data[it].toDouble() })
 
-    constructor(dim: Int, shape: IntArray, data: IntArray) :
-            this(dim, shape, DoubleArray(shape.reduce {tot, num -> tot * num}) { data[it].toDouble() })
+    constructor(shape: IntArray, data: IntArray) :
+            this(shape, DoubleArray(shape.reduce {tot, num -> tot * num}) { data[it].toDouble() })
 
     operator fun get(indices: IntArray): Double {
         return if (indices.size != dim) throw IllegalArgumentException("Tensor.get: Too many indices")
@@ -39,7 +40,7 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
                 val dataIndexStart = index * newTensorSize
                 val dataIndexEnd = (index + 1) * newTensorSize
                 val newData = (dataIndexStart until dataIndexEnd).map { data[it] }.toDoubleArray()
-                Tensor(dim - 1, newShape, newData)
+                Tensor(newShape, newData)
             }
         }
     }
@@ -54,7 +55,7 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
     open operator fun unaryPlus() = this
 
     open operator fun unaryMinus(): Tensor {
-        return Tensor(dim, shape, DoubleArray(size) {- data[it]})
+        return Tensor(shape, DoubleArray(size) {- data[it]})
     }
 
     operator fun plus(other: Tensor): Tensor {
@@ -64,7 +65,7 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
         val newData = DoubleArray(size) {
             data[it] + other.data[it]
         }
-        return Tensor(dim, shape, newData)
+        return Tensor(shape, newData)
     }
 
     operator fun minus(other: Tensor): Tensor {
@@ -74,7 +75,7 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
         val newData = DoubleArray(size) {
             data[it] - other.data[it]
         }
-        return Tensor(dim, shape, newData)
+        return Tensor(shape, newData)
     }
 
     operator fun times(other: Tensor): Tensor {
@@ -108,7 +109,7 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
                 }
                 sum
             }
-            Tensor(newDim, newShape, newData)
+            Tensor(newShape, newData)
         }
     }
 
@@ -116,14 +117,14 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
         val newData = DoubleArray(size) {
             data[it] * other.toDouble()
         }
-        return Tensor(dim, shape, newData)
+        return Tensor(shape, newData)
     }
 
     open operator fun div(other: Number): Tensor {
         val newData = DoubleArray(size) {
             data[it] / other.toDouble()
         }
-        return Tensor(dim, shape, newData)
+        return Tensor(shape, newData)
     }
 
     operator fun plusAssign(other: Tensor) {
@@ -188,30 +189,38 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
         if (negOneCount > 0) {
             newShape[negOneIndex] = size / acc
         }
-
-        val newDim = newShape.size
-        return Tensor(newDim, newShape, data)
+        return Tensor(newShape, data)
     }
 
     fun flatten(): RowVector {
         return this.reshape(intArrayOf(-1)).toMatrix().toRowVector()
     }
 
-    private fun stackSuppl(other: Tensor): Tensor {
-        return when (dim-other.dim) {
-            0 -> {
-                other.shape.forEachIndexed {index, it ->
-                    if (this.shape[index] != it) throw IllegalArgumentException("Tensor.stack: Cannot stack tensors with different shape")
-                }
-                Tensor(dim + 1, intArrayOf(2) + other.shape, data + other.data)
+    fun concat(other: Tensor, concatDim: Int): Tensor {
+        if (dim != other.dim || concatDim >= dim) throw IllegalArgumentException("Tensor.concat: invalid dimension")
+        else {
+            shape.forEachIndexed { index, it ->
+                if (index != concatDim && it != other.shape[index])
+                    throw IllegalArgumentException("Tensor.concat: two tensors must have same shape except for concat dimension")
             }
-            1 -> {
-                other.shape.forEachIndexed { index, it ->
-                    if (this.shape[index + 1] != it) throw IllegalArgumentException("Tensor.stack: Cannot stack tensors with different shape")
+            val newShape = IntArray(shape.size) {
+                when (it) {
+                    concatDim -> shape[it] + other.shape[it]
+                    else -> shape[it]
                 }
-                Tensor(dim, intArrayOf(shape[0]+1) + other.shape, data + other.data)
             }
-            else -> throw IllegalArgumentException("Tensor.stack: Cannot stack tensors with different shape")
+            val newSize = calculateSize(newShape)
+            return Tensor(newShape, DoubleArray(newSize) {
+                val newIndices = dataIndexToTensorIndices(newShape, it)
+                when {
+                    newIndices[concatDim] < shape[concatDim] ->
+                        this[newIndices]
+                    else -> {
+                        newIndices[concatDim] -= shape[concatDim]
+                        other[newIndices]
+                    }
+                }
+            })
         }
     }
 
@@ -231,11 +240,29 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
         }
     }
 
-    private fun calculateSize(): Int {
-        return shape.reduce {
+    private fun calculateSize(newShape: IntArray): Int {
+        return newShape.reduce {
                 total, num ->
             if (num <= 0) throw IllegalArgumentException("Tensor.init: Invalid shape")
             else total * num
+        }
+    }
+
+    private fun stackSuppl(other: Tensor): Tensor {
+        return when (dim-other.dim) {
+            0 -> {
+                other.shape.forEachIndexed {index, it ->
+                    if (this.shape[index] != it) throw IllegalArgumentException("Tensor.stack: Cannot stack tensors with different shape")
+                }
+                Tensor(intArrayOf(2) + other.shape, data + other.data)
+            }
+            1 -> {
+                other.shape.forEachIndexed { index, it ->
+                    if (this.shape[index + 1] != it) throw IllegalArgumentException("Tensor.stack: Cannot stack tensors with different shape")
+                }
+                Tensor(intArrayOf(shape[0]+1) + other.shape, data + other.data)
+            }
+            else -> throw IllegalArgumentException("Tensor.stack: Cannot stack tensors with different shape")
         }
     }
 
@@ -391,4 +418,9 @@ open class Tensor(val dim: Int, val shape: IntArray, val data: DoubleArray =
             return tensors.fold(init) { acc, tensor -> acc.stackSuppl(tensor) }
         }
     }
+}
+
+operator fun Number.times(other: Tensor): Tensor {
+    val newData = DoubleArray(other.size) { other.data[it] * this.toDouble() }
+    return Tensor(other.shape, newData)
 }

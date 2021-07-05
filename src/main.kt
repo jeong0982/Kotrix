@@ -96,9 +96,9 @@ fun main(args: Array<String>) {
 //    vec *= 3
 //    println(vec)
 
-    val tensor = Tensor(6, intArrayOf(2,2,2,2,2,2), IntArray(2*2*2*2*2*2){it})
+//    val tensor = Tensor(6, intArrayOf(2,2,2,2,2,2), IntArray(2*2*2*2*2*2){it})
 //    val tensor1 = Tensor(2, intArrayOf(2, 3), IntArray(2*3){it})
-    val tensor2 = Tensor(2, intArrayOf(3, 2), IntArray(2*3){it})
+//    val tensor2 = Tensor(2, intArrayOf(3, 2), IntArray(2*3){it})
 //    println(tensor1)
 //    println()
 //    println(tensor2)
@@ -113,8 +113,14 @@ fun main(args: Array<String>) {
 //    mat1[intArrayOf(2,2)] = 123
 //    println(mat1[intArrayOf(2,2)])
 //    println(tensor[tensor.dataIndexToTensorIndices(36)])
-    val tensor3 = Tensor.stack(arrayListOf(tensor2, tensor2, tensor2))
-    println(tensor3)
-    println(Tensor.stack(arrayListOf(tensor3, tensor3, tensor3)))
+//    val tensor3 = Tensor.stack(arrayListOf(tensor2, tensor2, tensor2))
+//    println(tensor3)
+//    println(Tensor.stack(arrayListOf(tensor3, tensor3, tensor3)))
 
+    val tensor4 = Tensor(intArrayOf(2,2,2), IntArray(8) {it})
+    val tensor5 = Tensor(intArrayOf(3,2,2), IntArray(12) {-it})
+
+    println(tensor4)
+    println(tensor5)
+    println(tensor4.concat(tensor5, 0))
 }
