@@ -1,6 +1,8 @@
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
+import complexTensor.ComplexTensor
+import realTensor.Matrix
+import utils.ComplexDouble
+import utils.i
+import utils.r
 
 // Test
 fun main(args: Array<String>) {
@@ -124,9 +126,17 @@ fun main(args: Array<String>) {
 //    println(tensor5)
 //    println(tensor4.concat(tensor5, 0))
 
-    val z1 = ComplexDouble(1, 1)
-    val z2 = ComplexDouble(1, -1)
-    println(z1)
-    println(z2)
-    println(z1 / z2)
+//    var z1 = ComplexDouble(1, 1)
+//    val z2 = ComplexDouble(1, -1)
+//    z1 += z2
+//    println(z1)
+//    println(z2)
+//    println(z1 / z2)
+    
+    val compT1 = ComplexTensor(intArrayOf(2,2), Array(4) { it.r - it.i})
+    val compT2 = ComplexTensor(intArrayOf(2,2), Array(4) {it.i})
+    println(compT1)
+    println(compT2)
+    println(compT1 + compT2)
+    println(compT1 * compT2)
 }

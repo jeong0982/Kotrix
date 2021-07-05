@@ -1,3 +1,5 @@
+package realTensor
+
 class RowVector(val length: Int, data: DoubleArray = DoubleArray(length){0.0}): Matrix(1, length, data) {
 
     constructor(length: Int, data: LongArray) : this(length, DoubleArray(length) { data[it].toDouble() })
@@ -159,11 +161,4 @@ class RowVector(val length: Int, data: DoubleArray = DoubleArray(length){0.0}): 
             lambda(this[it]).toDouble()
         })
     }
-}
-
-operator fun Number.times(other: RowVector): RowVector {
-    val newData = DoubleArray(other.length) {
-        this.toDouble() * other[it]
-    }
-    return RowVector(other.length, newData)
 }

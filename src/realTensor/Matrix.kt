@@ -1,3 +1,5 @@
+package realTensor
+
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -436,13 +438,4 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
             return rotationMatrix3dZ(alpha) * rotationMatrix3dX(beta) * rotationMatrix3dZ(gamma)
         }
     }
-}
-
-operator fun Number.times(other: Matrix): Matrix {
-    val newData = DoubleArray(other.rows * other.cols) {
-        val rowIndex = it / other.cols
-        val colIndex = it % other.cols
-        this.toDouble() * other[rowIndex, colIndex]
-    }
-    return Matrix(other.rows, other.cols, newData)
 }

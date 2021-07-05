@@ -1,10 +1,10 @@
+package utils
+
 import kotlin.math.*
 
 class ComplexDouble (real: Number, imaginary: Number) {
-    val re = real.toDouble()
-    val im = imaginary.toDouble()
-    val abs by lazy { sqrt(re.pow(2) + im.pow(2)) }
-    val arg by lazy { atan2(im, re) }
+    var re = real.toDouble()
+    var im = imaginary.toDouble()
 
     operator fun unaryPlus() = this
 
@@ -28,26 +28,16 @@ class ComplexDouble (real: Number, imaginary: Number) {
 
     fun conj() = ComplexDouble(re, -im)
 
+    fun abs() = sqrt(re.pow(2) + im.pow(2))
+
+    fun arg() = atan2(im, re)
+
     override fun toString(): String {
-        return if (im >= 0) "${re.toFormattedString()}+${im.toFormattedString()}i"
-        else "${re.toFormattedString()}-${(-im).toFormattedString()}i"
+        return if (im >= 0) " ${re.toFormattedString()}+${im.toFormattedString()}i "
+        else " ${re.toFormattedString()}-${(-im).toFormattedString()}i "
     }
 
     companion object {
         fun polarForm(r: Double, theta: Double) = ComplexDouble(r*cos(theta), r*sin(theta))
     }
 }
-
-val Number.i: ComplexDouble
-    get() = ComplexDouble(0, toDouble())
-
-val Number.r: ComplexDouble
-    get() = ComplexDouble(toDouble(), 0)
-
-operator fun Number.plus(other: ComplexDouble) = other + this
-
-operator fun Number.minus(other: ComplexDouble) = -other + this
-
-operator fun Number.times(other: ComplexDouble) = other * this
-
-operator fun Number.div(other: ComplexDouble) = this.r / other

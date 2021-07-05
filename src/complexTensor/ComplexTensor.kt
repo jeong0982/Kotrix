@@ -1,85 +1,84 @@
-open class Tensor(val shape: IntArray, val data: DoubleArray =
-    DoubleArray(shape.reduce {
+package complexTensor
+
+import realTensor.Matrix
+import realTensor.RowVector
+import realTensor.Tensor
+import utils.ComplexDouble
+import utils.StringVector
+import utils.r
+import utils.toFormattedString
+
+open class ComplexTensor(val shape: IntArray, val data: Array<ComplexDouble> =
+    Array(shape.reduce {
             total, num ->
-            if (num <= 0) throw IllegalArgumentException("Tensor.init: Invalid shape")
+            if (num <= 0) throw IllegalArgumentException("ComplexTensor.init: Invalid shape")
             else total * num
         }
-    )
+    ) { 0.0.r }
 ) {
-    val size: Int = data.size
-    val dim: Int = shape.size
+    val size = data.size
+    val dim = shape.size
 
     init {
-        if (dim < 0) throw IllegalArgumentException("Tensor.init: dimension must be a non-negative integer")
-        if (shape.size != dim) throw IllegalArgumentException("Tensor.init: shape.size != dim")
-        if (size != calculateSize(shape)) throw IllegalArgumentException("Tensor.init: Invalid data length")
+        if (size != calculateSize(shape)) throw IllegalArgumentException("ComplexTensor.init: Invalid data length")
     }
 
-    constructor(shape: IntArray, data: LongArray) :
-            this(shape, DoubleArray(shape.reduce {tot, num -> tot * num}) { data[it].toDouble() })
-
-    constructor(shape: IntArray, data: FloatArray) :
-            this(shape, DoubleArray(shape.reduce {tot, num -> tot * num}) { data[it].toDouble() })
-
-    constructor(shape: IntArray, data: IntArray) :
-            this(shape, DoubleArray(shape.reduce {tot, num -> tot * num}) { data[it].toDouble() })
-
-    operator fun get(indices: IntArray): Double {
-        return if (indices.size != dim) throw IllegalArgumentException("Tensor.get: Too many indices")
+    operator fun get(indices: IntArray): ComplexDouble {
+        return if (indices.size != dim) throw IllegalArgumentException("ComplexTensor.get: Too many indices")
         else data[tensorIndicesToDataIndex(shape, indices)]
     }
 
-    operator fun get(indexLong: Long): Tensor {
+    operator fun get(indexLong: Long): ComplexTensor {
         val index = indexLong.toInt()
         return when {
-            index >= shape[0] -> throw IllegalArgumentException("Tensor.get: Index out of bound")
-            dim == 0 -> throw IllegalArgumentException("Tensor.get: cannot get from 0-dimensional tensor. use [intArrayOf()] to get value.")
+            index >= shape[0] -> throw IllegalArgumentException("ComplexTensor.get: Index out of bound")
+            dim == 0 -> throw IllegalArgumentException("ComplexTensor.get: cannot get from 0-dimensional tensor. use [intArrayOf()] to get value.")
             else -> {
                 val newShape = (1..shape.lastIndex).map { shape[it] }.toIntArray()
                 val newTensorSize = newShape.reduce { total, num -> total * num }
                 val dataIndexStart = index * newTensorSize
                 val dataIndexEnd = (index + 1) * newTensorSize
-                val newData = (dataIndexStart until dataIndexEnd).map { data[it] }.toDoubleArray()
-                Tensor(newShape, newData)
+                val newData = (dataIndexStart until dataIndexEnd).map { data[it] }.toTypedArray()
+                ComplexTensor(newShape, newData)
             }
         }
     }
 
-    operator fun set(indices: IntArray, value: Number) {
+    operator fun set(indices: IntArray, value: ComplexDouble) {
         indices.forEachIndexed { index, it ->
-            if (it < 0 || it >= shape[index]) throw IllegalArgumentException("Tensor.set: Index out of bound")
+            if (it < 0 || it >= shape[index]) throw IllegalArgumentException("ComplexTensor.set: Index out of bound")
         }
-        data[tensorIndicesToDataIndex(shape, indices)] = value.toDouble()
+        data[tensorIndicesToDataIndex(shape, indices)] = value
     }
 
     open operator fun unaryPlus() = this
 
-    open operator fun unaryMinus(): Tensor {
-        return Tensor(shape, DoubleArray(size) {- data[it]})
+    open operator fun unaryMinus(): ComplexTensor {
+        return ComplexTensor(shape, Array(size) {- data[it]})
     }
 
-    operator fun plus(other: Tensor): Tensor {
+    operator fun plus(other: ComplexTensor): ComplexTensor {
         shape.forEachIndexed { index, it ->
-            if (it != other.shape[index]) throw IllegalArgumentException("Tensor.plus: Two tensors should have the same shape.")
+            if (it != other.shape[index]) throw IllegalArgumentException("ComplexTensor.plus: Two tensors should have the same shape.")
         }
-        val newData = DoubleArray(size) {
+        val newData = Array(size) {
             data[it] + other.data[it]
         }
-        return Tensor(shape, newData)
+        return ComplexTensor(shape, newData)
     }
 
-    operator fun minus(other: Tensor): Tensor {
+    operator fun minus(other: ComplexTensor): ComplexTensor {
         shape.forEachIndexed { index, it ->
-            if (it != other.shape[index]) throw IllegalArgumentException("Tensor.minus: Two tensors should have the same shape.")
+            if (it != other.shape[index]) throw IllegalArgumentException("ComplexTensor.minus: Two tensors should have the same shape.")
         }
-        val newData = DoubleArray(size) {
+        val newData = Array(size) {
             data[it] - other.data[it]
         }
-        return Tensor(shape, newData)
+        return ComplexTensor(shape, newData)
     }
 
-    operator fun times(other: Tensor): Tensor {
-        return if (shape.last() != other.shape[0]) throw IllegalArgumentException("Tensor.times: Invalid tensor product.")
+    operator fun times(other: ComplexTensor): ComplexTensor {
+        return if (shape.last() != other.shape[0]) throw IllegalArgumentException("ComplexTensor.times: Invalid tensor product.")
         else {
             val newDim = dim - 1 + other.dim - 1
             val newShape = IntArray(newDim) {
@@ -89,9 +88,9 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
                 }
             }
             val newSize = newShape.reduce { tot, num -> tot * num }
-            val newData = DoubleArray(newSize) { dataIndex ->
+            val newData = Array(newSize) { dataIndex ->
                 val newIndices = dataIndexToTensorIndices(newShape, dataIndex)
-                var sum = 0.0
+                var sum = 0.0.r
                 for (sumIndex in 0 until shape.last()) {
                     val indices1 = IntArray(dim) {
                         when {
@@ -109,36 +108,36 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
                 }
                 sum
             }
-            Tensor(newShape, newData)
+            ComplexTensor(newShape, newData)
         }
     }
 
-    open operator fun times(other: Number): Tensor {
-        val newData = DoubleArray(size) {
+    open operator fun times(other: Number): ComplexTensor {
+        val newData = Array(size) {
             data[it] * other.toDouble()
         }
-        return Tensor(shape, newData)
+        return ComplexTensor(shape, newData)
     }
 
-    open operator fun div(other: Number): Tensor {
-        val newData = DoubleArray(size) {
+    open operator fun div(other: Number): ComplexTensor {
+        val newData = Array(size) {
             data[it] / other.toDouble()
         }
-        return Tensor(shape, newData)
+        return ComplexTensor(shape, newData)
     }
 
-    operator fun plusAssign(other: Tensor) {
+    operator fun plusAssign(other: ComplexTensor) {
         shape.forEachIndexed { index, it ->
-            if (it != other.shape[index]) throw IllegalArgumentException("Tensor.plus: Two tensors should have the same shape.")
+            if (it != other.shape[index]) throw IllegalArgumentException("ComplexTensor.plus: Two tensors should have the same shape.")
         }
         for(i in 0 until size) {
             data[i] += other.data[i]
         }
     }
 
-    operator fun minusAssign(other: Tensor) {
+    operator fun minusAssign(other: ComplexTensor) {
         shape.forEachIndexed { index, it ->
-            if (it != other.shape[index]) throw IllegalArgumentException("Tensor.plus: Two tensors should have the same shape.")
+            if (it != other.shape[index]) throw IllegalArgumentException("ComplexTensor.plus: Two tensors should have the same shape.")
         }
         for(i in 0 until size) {
             data[i] -= other.data[i]
@@ -147,29 +146,29 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
 
     operator fun timesAssign(other: Number) {
         for (i in 0 until size) {
-            data[i] *= other.toDouble()
+            data[i] = data[i] * other.toDouble()
         }
     }
 
     operator fun divAssign(other: Number) {
         for (i in 0 until size) {
-            data[i] /= other.toDouble()
+            data[i] = data[i] / other.toDouble()
         }
     }
 
-    fun toMatrix(): Matrix {
-        return when (dim) {
-            1 -> {
-                Matrix(1, shape[0], data)
-            }
-            2 -> {
-                Matrix(shape[0], shape[1], data)
-            }
-            else -> throw IllegalStateException("Tensor.toMatrix: must be a 2 dimensional tensor, not $dim.")
-        }
-    }
+//    fun toComplexMatrix(): ComplexMatrix {
+//        return when (dim) {
+//            1 -> {
+//                ComplexMatrix(1, shape[0], data)
+//            }
+//            2 -> {
+//                ComplexMatrix(shape[0], shape[1], data)
+//            }
+//            else -> throw IllegalStateException("ComplexTensor.toComplexMatrix: must be a 2 dimensional tensor, not $dim.")
+//        }
+//    }
 
-    fun reshape(newShape: IntArray): Tensor {
+    fun reshape(newShape: IntArray): ComplexTensor {
         var negOneIndex = -1
         var negOneCount = 0
         var acc = 1
@@ -181,27 +180,27 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
                 }
                 it > 0 -> {
                     acc *= it
-                    if (size % acc != 0) throw IllegalArgumentException("Tensor.reshape: invalid shape input")
+                    if (size % acc != 0) throw IllegalArgumentException("ComplexTensor.reshape: invalid shape input")
                 }
-                else -> throw IllegalArgumentException("Tensor.reshape: invalid shape input")
+                else -> throw IllegalArgumentException("ComplexTensor.reshape: invalid shape input")
             }
         }
         if (negOneCount > 0) {
             newShape[negOneIndex] = size / acc
         }
-        return Tensor(newShape, data)
+        return ComplexTensor(newShape, data)
     }
 
-    fun flatten(): RowVector {
-        return this.reshape(intArrayOf(-1)).toMatrix().toRowVector()
-    }
+//    fun flatten(): RowVector {
+//        return this.reshape(intArrayOf(-1)).toComplexMatrix().toRowVector()
+//    }
 
-    fun concat(other: Tensor, concatDim: Int): Tensor {
-        if (dim != other.dim || concatDim >= dim) throw IllegalArgumentException("Tensor.concat: invalid dimension")
+    fun concat(other: ComplexTensor, concatDim: Int): ComplexTensor {
+        if (dim != other.dim || concatDim >= dim) throw IllegalArgumentException("ComplexTensor.concat: invalid dimension")
         else {
             shape.forEachIndexed { index, it ->
                 if (index != concatDim && it != other.shape[index])
-                    throw IllegalArgumentException("Tensor.concat: two tensors must have same shape except for concat dimension")
+                    throw IllegalArgumentException("ComplexTensor.concat: two tensors must have same shape except for concat dimension")
             }
             val newShape = IntArray(shape.size) {
                 when (it) {
@@ -210,7 +209,7 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
                 }
             }
             val newSize = calculateSize(newShape)
-            return Tensor(newShape, DoubleArray(newSize) {
+            return ComplexTensor(newShape, Array(newSize) {
                 val newIndices = dataIndexToTensorIndices(newShape, it)
                 when {
                     newIndices[concatDim] < shape[concatDim] ->
@@ -235,7 +234,7 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
 
     private fun tensorIndicesToDataIndex(newShape: IntArray, tensorIndices: IntArray): Int {
         return tensorIndices.reduceIndexed { index, acc, tensorIndex ->
-            if (tensorIndex >= newShape[index]) throw IllegalArgumentException("Tensor.tensorIndicesToDataIndex: Index out of bound")
+            if (tensorIndex >= newShape[index]) throw IllegalArgumentException("ComplexTensor.tensorIndicesToDataIndex: Index out of bound")
             (acc * newShape[index]) + tensorIndex
         }
     }
@@ -243,77 +242,49 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
     private fun calculateSize(newShape: IntArray): Int {
         return newShape.reduce {
                 total, num ->
-            if (num <= 0) throw IllegalArgumentException("Tensor.init: Invalid shape")
+            if (num <= 0) throw IllegalArgumentException("ComplexTensor.init: Invalid shape")
             else total * num
         }
     }
 
-    private fun stackSuppl(other: Tensor): Tensor {
+    private fun stackSuppl(other: ComplexTensor): ComplexTensor {
         return when (dim-other.dim) {
             0 -> {
                 other.shape.forEachIndexed {index, it ->
-                    if (this.shape[index] != it) throw IllegalArgumentException("Tensor.stack: Cannot stack tensors with different shape")
+                    if (this.shape[index] != it) throw IllegalArgumentException("ComplexTensor.stack: Cannot stack tensors with different shape")
                 }
-                Tensor(intArrayOf(2) + other.shape, data + other.data)
+                ComplexTensor(intArrayOf(2) + other.shape, data + other.data)
             }
             1 -> {
                 other.shape.forEachIndexed { index, it ->
-                    if (this.shape[index + 1] != it) throw IllegalArgumentException("Tensor.stack: Cannot stack tensors with different shape")
+                    if (this.shape[index + 1] != it) throw IllegalArgumentException("ComplexTensor.stack: Cannot stack tensors with different shape")
                 }
-                Tensor(intArrayOf(shape[0]+1) + other.shape, data + other.data)
+                ComplexTensor(intArrayOf(shape[0]+1) + other.shape, data + other.data)
             }
-            else -> throw IllegalArgumentException("Tensor.stack: Cannot stack tensors with different shape")
-        }
-    }
-
-    private class StringVector(val stringData: ArrayList<String>) {
-        override fun toString(): String {
-            var retStr = ""
-            stringData.forEachIndexed {index, value ->
-                retStr += value
-                if (index != stringData.lastIndex) retStr += "\n"
-            }
-            return retStr
-        }
-
-        fun concatHorizontal(other: StringVector): StringVector {
-            return if (stringData.size != other.stringData.size) throw IllegalArgumentException("StringMatrix: invalid Size")
-            else {
-                val newStringData = arrayListOf<String>()
-                stringData.forEachIndexed {index, str -> newStringData.add(str + "  " + other.stringData[index])}
-                StringVector(newStringData)
-            }
-        }
-
-        fun concatVertical(other: StringVector): StringVector {
-            return StringVector((stringData + arrayListOf(" ".repeat(other.stringData[0].length)) + other.stringData) as ArrayList<String>)
-        }
-
-        fun rawConcatVertical(other: StringVector): StringVector {
-            return StringVector((stringData + other.stringData) as ArrayList<String>)
+            else -> throw IllegalArgumentException("ComplexTensor.stack: Cannot stack tensors with different shape")
         }
     }
 
     private fun toStringVector(): StringVector {
-        return when {
-            dim == 1 -> {
+        return when (dim) {
+            1 -> {
                 val stringData = arrayListOf<String>()
                 var data = "[ "
                 for (i in 0 until shape[0]) {
                     val value = this[intArrayOf(i)]
-                    data += value.toFormattedString()
+                    data += value.toString()
                 }
                 data += " ]"
                 stringData.add(data)
                 StringVector(stringData)
             }
-            dim == 2 -> {
+            2 -> {
                 val stringData = arrayListOf<String>()
                 for (i in 0 until shape[0]) {
                     var data = "[ "
                     for (j in 0 until shape[1]) {
                         val value = this[intArrayOf(i, j)]
-                        data += value.toFormattedString()
+                        data += value.toString()
                     }
                     data += " ]"
                     stringData.add(data)
@@ -393,29 +364,9 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
     }
 
     companion object {
-        fun stack(tensors: Iterable<Tensor>): Tensor {
+        fun stack(tensors: Iterable<ComplexTensor>): ComplexTensor {
             val init = tensors.elementAt(0)
             return tensors.fold(init) { acc, tensor -> acc.stackSuppl(tensor) }
         }
-    }
-}
-
-operator fun Number.times(other: Tensor): Tensor {
-    val newData = DoubleArray(other.size) { other.data[it] * this.toDouble() }
-    return Tensor(other.shape, newData)
-}
-
-fun Number.toFormattedString(): String {
-    val thisToDouble = this.toDouble()
-    return when {
-        thisToDouble >= 1000 -> " %.0f ".format(thisToDouble)
-        thisToDouble >= 100 -> " %.0f. ".format(thisToDouble)
-        thisToDouble >= 10 -> " %.1f ".format(thisToDouble)
-        thisToDouble == -0.0 -> " 0.00 "
-        thisToDouble >= 0 -> " %.2f ".format(thisToDouble)
-        thisToDouble > -10 -> "%.2f ".format(thisToDouble)
-        thisToDouble > -100 -> "%.1f ".format(thisToDouble)
-        thisToDouble > -1000 -> "%.0f. ".format(thisToDouble)
-        else -> "%.0f ".format(thisToDouble)
     }
 }
