@@ -261,14 +261,20 @@ println(complexTensor)
     * Get an absolute value `val absVal = z.abs()`
     * Get an argument of a complex number `val arg = z.arg()`
     * Get a complex conjugate `val zBar = z.conj()`
+  
+
 ###ComplexTensor
 *Supports every operation in `Tensor` class*
 * Additional operations
     * *Will be added*
+  
+
 ###ComplexMatrix
 *Supports every operation in `Matrix` class*
 * Additional operations
   * *Will be added*
+  
+
 ###ComplexVectors
 *Supports every operation in `RowVector` or `ColumnVector` class*
 * Additional operations
