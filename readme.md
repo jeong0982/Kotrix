@@ -247,7 +247,7 @@ println(complexTensor)
     * Convert to `ComplexVector` class `val cplxVec = vec.toComplex()`
 
 
-###ComplexDouble
+### ComplexDouble
 * Basic operations
     * +ComplexDouble, -ComplexDouble
     * ComplexDouble   (+, -, *, /)   ComplexDouble
@@ -263,19 +263,22 @@ println(complexTensor)
     * Get a complex conjugate `val zBar = z.conj()`
   
 
-###ComplexTensor
+### ComplexTensor
+
 *Supports every operation in `Tensor` class*
 * Additional operations
     * *Will be added*
   
 
-###ComplexMatrix
+### ComplexMatrix
+
 *Supports every operation in `Matrix` class*
 * Additional operations
   * *Will be added*
   
 
-###ComplexVectors
+### ComplexVectors
+
 *Supports every operation in `RowVector` or `ColumnVector` class*
 * Additional operations
   * *Will be added*
