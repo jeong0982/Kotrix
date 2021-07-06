@@ -6,6 +6,12 @@ There are three classes in this repository.
 `Tensor` class represents multidimensional tensors that can be added, subtracted, multiplied each other.  
 `Matrix` class, which inherits `Tensor`, represents matrices(i.e., 2-dimensional tensors).  
 Finally, `ColumnVector` and `RowVector` classes, which inherits `Matrix`, represent vectors.
+
+
+As `Kotrix` also supports complex tensors, all these classes have their own variations for Complex number(represented by `ComplexDouble` class):
+`ComplexTensor`, `ComplexMatrix`, `ComplexRowVector` and `ComplexColumnVector`.
+
+
 ## Class Initialization
 ### Tensor
 Supports initialization with `DoubleArray` `FloatArray`, `LongArray`, or `IntArray`.
@@ -72,7 +78,7 @@ println(mat)
 [  1.00  2.00  3.00  ]
 [  2.00  3.00  4.00  ]
 ```
-### Vector
+### Vectors
 Supports both column vector and row vector.
 ```kotlin
 val colVec = ColumnVector(3)
@@ -97,6 +103,35 @@ println(vec)
 [  1.00  ]
 [  4.00  ]
 ```
+### ComplexDouble
+Supports initialization with `Double`, `Float`, `Long` and `Int`.
+```kotlin
+var z = ComplexDouble(1, 1)
+println(z)
+```
+```
+1.00 + 1.00 i 
+```
+It also can be generated from `Double`, `Float`, `Long` and `Int`.
+```kotlin
+val z = 1.R - 2.I
+println(z)
+```
+```
+1.00 - 2.00 i
+```
+### ComplexTensor, ComplexMatrix, ComplexVectors
+Using `ComplexDouble`, their initialization is similar to normal tensors.
+```kotlin
+val complexTensor = ComplexTensor(intArrayOf(2,2,2), Array(8) { it.R - it.I })
+println(complexTensor)
+```
+```
+[                                                                              ]
+[  [   0.00 + 0.00 i   1.00 - 1.00 i  ]  [   4.00 - 4.00 i   5.00 - 5.00 i  ]  ]
+[  [   2.00 - 2.00 i   3.00 - 3.00 i  ]  [   6.00 - 6.00 i   7.00 - 7.00 i  ]  ]
+[                                                                              ]
+```
 ## Supported operations
 ### Tensor
 * Basic operations 
@@ -117,14 +152,17 @@ println(vec)
     * Get an element with a specific indices `val e = tensor[arrayOfIndices]`
     * Set an element `tensor[arrayOfIndices] = value`
   
-* Tensor creations    
-    * *(Will be added)*
+
 * Additional operations
     * Downcast to `Matrix` class
-    * Reshape `val newTensor = tensor.reshape(newShape)`
-    * Flatten `val rowVector = tensor.flatten()`
-    * Concat `val newTensor = tensor1.concat(tensor2, concatDim)`
-    * Stack tensors to make a new tensor with one bigger dimension.`val stackTensor = Tensor.stack(tensors)`
+    * Reshape `val newTen = ten.reshape(newShape)`
+    * Flatten `val rowVec = ten.flatten()`
+    * Concat `val newTen = ten1.concat(ten2, concatDim)`
+    * Stack tensors to make a new tensor with one bigger dimension.`val stackTen = Ten.stack(tensors)`
+    * Make a mapped tensor `val sinTen = ten.map {elem -> sin(elem)}`
+    * Convert to `ComplexTensor` class `val cplxTen = ten.toComplex`
+  
+
 ### Matrix
 * Basic operations
     * +Matrix, -Matrix
@@ -160,7 +198,7 @@ println(vec)
     * Get an adjoint matrix `val adjMat = mat.adjointMatrix()`
     * Get an inverse matrix `val invMat = mat.inverseMatrix()`
     * Get a submatrix `val subMat = mat.getSubmatrix(rowIndexStart, rowIndexEnd, colIndexStart, colIndexEnd)`
-    * Set a submatrix `mat.getSubmatrix(rowIndexStart, rowIndexEnd, colIndexStart, colIndexEnd, newMat)`
+    * Set a submatrix `mat.setSubmatrix(rowIndexStart, rowIndexEnd, colIndexStart, colIndexEnd, newMat)`
     * Get a cofactor matrix `val cofactorMat = mat.cofactorMatrix()`
     * Do a row switching operation `val newMat = mat.switchRow(rowIndex1, rowIndex2)`
     * Concat to another matrix `val concatMat = mat.concat(otherMat, dim)`
@@ -173,8 +211,10 @@ println(vec)
     * Reshape `val newMat = mat.reshape(3, -1)`
     * Downcast to `RowVector` class
     * Downcast to `ColumnVector` class
+    * Convert to `ComplexMatrix` class `val cplxMat = mat.toComplex`
 
-### Vector
+
+### Vectors
 * Basic operations
     * +Vector, -Vector
     * Vector + Vector
@@ -192,9 +232,9 @@ println(vec)
 
 * Additional operations
     * Transpose a vector `val vecT = vec.transpose()`
-    * Get a squared Frobenius norm `val squaredNorm = mat.frobeniusNormSquared()`
+    * Get a squared Frobenius norm `val squaredNorm = vec.frobeniusNormSquared()`
     * Get a subvector `val subVec = mat.getSubvector(IndexStart, IndexEnd)`
-    * Set a subvector `mat.getSubvector(IndexStart, IndexEnd, newVec)`
+    * Set a subvector `vec.setSubvector(IndexStart, IndexEnd, newVec)`
     * Concat to another matrix or vector `val concatMat = vec.concat(otherMat, dim)`
     * Sum up all elements `val sum = vec.sum()`
     * Get an element-wise product `val newVec = vec1.eltwiseMul(vec2)`
@@ -204,3 +244,32 @@ println(vec)
     * Replicate a vector to make a matrix `val mat = vec.replicate(length)`
     * Make a mapped vector `val sinVec = vec.map {elem -> sin(elem)}`
     * Reshape `val newMat = vec.reshape(3, 2)`
+    * Convert to `ComplexVector` class `val cplxVec = vec.toComplex()`
+
+
+###ComplexDouble
+* Basic operations
+    * +ComplexDouble, -ComplexDouble
+    * ComplexDouble   (+, -, *, /)   ComplexDouble
+    * ComplexDouble * ComplexTensor
+    * ComplexDouble * ComplexMatrix
+    * ComplexDouble * ComplexVector
+    * ComplexDouble * (Double, Long, Int, Float)
+    * (Double, Long, Int, Float) * ComplexDouble
+    * ComplexDouble (+=, -=, *=, /=) ComplexDouble
+* Additional operations
+    * Get an absolute value `val absVal = z.abs()`
+    * Get an argument of a complex number `val arg = z.arg()`
+    * Get a complex conjugate `val zBar = z.conj()`
+###ComplexTensor
+*Supports every operation in `Tensor` class*
+* Additional operations
+    * *Will be added*
+###ComplexMatrix
+*Supports every operation in `Matrix` class*
+* Additional operations
+  * *Will be added*
+###ComplexVectors
+*Supports every operation in `RowVector` or `ColumnVector` class*
+* Additional operations
+  * *Will be added*

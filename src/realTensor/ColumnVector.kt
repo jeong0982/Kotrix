@@ -1,5 +1,8 @@
 package realTensor
 
+import complexTensor.ComplexColumnVector
+import utils.R
+
 class ColumnVector(val length: Int, data: DoubleArray = DoubleArray(length){0.0}) : Matrix(length, 1, data) {
 
     constructor(length: Int, data: LongArray) : this(length, DoubleArray(length) { data[it].toDouble() })
@@ -145,5 +148,9 @@ class ColumnVector(val length: Int, data: DoubleArray = DoubleArray(length){0.0}
         return ColumnVector(length, DoubleArray(length) {
             lambda(this[it]).toDouble()
         })
+    }
+
+    override fun toComplex(): ComplexColumnVector {
+        return ComplexColumnVector(length, Array(length) {data[it].R})
     }
 }

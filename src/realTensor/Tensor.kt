@@ -1,5 +1,7 @@
 package realTensor
 
+import complexTensor.ComplexTensor
+import utils.R
 import utils.StringVector
 import utils.toFormattedString
 
@@ -229,6 +231,16 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
         }
     }
 
+    open fun map(lambda: (e: Double) -> Number): Tensor {
+        return Tensor(shape, DoubleArray(size) {
+            lambda(data[it]).toDouble()
+        })
+    }
+
+    open fun toComplex(): ComplexTensor {
+        return ComplexTensor(shape, Array(size) { data[it].R })
+    }
+
     private fun dataIndexToTensorIndices(newShape: IntArray, dataIndex: Int): IntArray {
         val retList = arrayListOf<Int>()
         newShape.foldRight(dataIndex) { it, acc ->
@@ -270,34 +282,6 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
             else -> throw IllegalArgumentException("Tensor.stack: Cannot stack tensors with different shape")
         }
     }
-
-//    private class StringVector(val stringData: ArrayList<String>) {
-//        override fun toString(): String {
-//            var retStr = ""
-//            stringData.forEachIndexed {index, value ->
-//                retStr += value
-//                if (index != stringData.lastIndex) retStr += "\n"
-//            }
-//            return retStr
-//        }
-//
-//        fun concatHorizontal(other: StringVector): StringVector {
-//            return if (stringData.size != other.stringData.size) throw IllegalArgumentException("StringMatrix: invalid Size")
-//            else {
-//                val newStringData = arrayListOf<String>()
-//                stringData.forEachIndexed {index, str -> newStringData.add(str + "  " + other.stringData[index])}
-//                StringVector(newStringData)
-//            }
-//        }
-//
-//        fun concatVertical(other: StringVector): StringVector {
-//            return StringVector((stringData + arrayListOf(" ".repeat(other.stringData[0].length)) + other.stringData) as ArrayList<String>)
-//        }
-//
-//        fun rawConcatVertical(other: StringVector): StringVector {
-//            return StringVector((stringData + other.stringData) as ArrayList<String>)
-//        }
-//    }
 
     private fun toStringVector(): StringVector {
         return when (dim) {

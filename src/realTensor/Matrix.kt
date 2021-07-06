@@ -1,5 +1,7 @@
 package realTensor
 
+import complexTensor.ComplexMatrix
+import utils.R
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -107,7 +109,7 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
             val colIndex = it % cols
             other.toDouble() * this[rowIndex, colIndex]
         }
-        return Matrix(rows, rows, newData)
+        return Matrix(rows, cols, newData)
     }
 
     override operator fun div(other: Number): Matrix {
@@ -116,7 +118,7 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
             val colIndex = it % cols
             this[rowIndex, colIndex] / other.toDouble()
         }
-        return Matrix(rows, rows, newData)
+        return Matrix(rows, cols, newData)
     }
 
     open fun transpose(): Matrix {
@@ -308,7 +310,7 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
             }
             norm
         }
-        return ColumnVector(1, newData)
+        return ColumnVector(rows, newData)
     }
 
     fun sum(): Double {
@@ -347,7 +349,7 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
         })
     }
 
-    open fun map(lambda: (e: Double) -> Number): Matrix {
+    override fun map(lambda: (e: Double) -> Number): Matrix {
         return Matrix(rows, cols, DoubleArray(rows * cols) {
             val rowIndex = it / cols
             val colIndex = it % cols
@@ -381,6 +383,10 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
     fun toColVector(): ColumnVector {
         if (cols != 1) throw IllegalStateException("Matrix.toColVector: Cannot downcast to ColumnVector")
         return ColumnVector(rows, data)
+    }
+
+    override fun toComplex(): ComplexMatrix {
+        return ComplexMatrix(rows, cols, Array(rows * cols) { data[it].R })
     }
 
     companion object {

@@ -1,15 +1,19 @@
 package utils
 
+import complexTensor.ComplexColumnVector
+import complexTensor.ComplexMatrix
+import complexTensor.ComplexRowVector
+import complexTensor.ComplexTensor
 import realTensor.ColumnVector
 import realTensor.Matrix
 import realTensor.RowVector
 import realTensor.Tensor
 
 
-val Number.i: ComplexDouble
+val Number.I: ComplexDouble
     get() = ComplexDouble(0, toDouble())
 
-val Number.r: ComplexDouble
+val Number.R: ComplexDouble
     get() = ComplexDouble(toDouble(), 0)
 
 
@@ -31,6 +35,26 @@ fun Number.toFormattedString(): String {
 operator fun Number.times(other: Tensor): Tensor {
     val newData = DoubleArray(other.size) { other.data[it] * this.toDouble() }
     return Tensor(other.shape, newData)
+}
+
+operator fun Number.times(other: ComplexTensor): ComplexTensor {
+    val newData = Array(other.size) { other.data[it] * this.toDouble() }
+    return ComplexTensor(other.shape, newData)
+}
+
+operator fun Number.times(other: ComplexMatrix): ComplexMatrix {
+    val newData = Array(other.size) { other.data[it] * this.toDouble() }
+    return ComplexMatrix(other.rows, other.cols, newData)
+}
+
+operator fun Number.times(other: ComplexRowVector): ComplexRowVector {
+    val newData = Array(other.size) { other.data[it] * this.toDouble() }
+    return ComplexRowVector(other.length, newData)
+}
+
+operator fun Number.times(other: ComplexColumnVector): ComplexColumnVector {
+    val newData = Array(other.size) { other.data[it] * this.toDouble() }
+    return ComplexColumnVector(other.length, newData)
 }
 
 operator fun Number.times(other: Matrix): Matrix {
@@ -62,6 +86,6 @@ operator fun Number.minus(other: ComplexDouble) = -other + this
 
 operator fun Number.times(other: ComplexDouble) = other * this
 
-operator fun Number.div(other: ComplexDouble) = this.r / other
+operator fun Number.div(other: ComplexDouble) = this.R / other
 
-fun Number.toComplexDouble() = this.r
+fun Number.toComplexDouble() = this.R

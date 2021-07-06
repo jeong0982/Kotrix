@@ -1,12 +1,8 @@
 package complexTensor
 
-import realTensor.Matrix
-import realTensor.RowVector
-import realTensor.Tensor
 import utils.ComplexDouble
 import utils.StringVector
-import utils.r
-import utils.toFormattedString
+import utils.R
 
 open class ComplexTensor(val shape: IntArray, val data: Array<ComplexDouble> =
     Array(shape.reduce {
@@ -14,7 +10,7 @@ open class ComplexTensor(val shape: IntArray, val data: Array<ComplexDouble> =
             if (num <= 0) throw IllegalArgumentException("ComplexTensor.init: Invalid shape")
             else total * num
         }
-    ) { 0.0.r }
+    ) { 0.0.R }
 ) {
     val size = data.size
     val dim = shape.size
@@ -90,7 +86,7 @@ open class ComplexTensor(val shape: IntArray, val data: Array<ComplexDouble> =
             val newSize = newShape.reduce { tot, num -> tot * num }
             val newData = Array(newSize) { dataIndex ->
                 val newIndices = dataIndexToTensorIndices(newShape, dataIndex)
-                var sum = 0.0.r
+                var sum = 0.0.R
                 for (sumIndex in 0 until shape.last()) {
                     val indices1 = IntArray(dim) {
                         when {
@@ -112,6 +108,13 @@ open class ComplexTensor(val shape: IntArray, val data: Array<ComplexDouble> =
         }
     }
 
+    open operator fun times(other: ComplexDouble): ComplexTensor {
+        val newData = Array(size) {
+            data[it] * other
+        }
+        return ComplexTensor(shape, newData)
+    }
+
     open operator fun times(other: Number): ComplexTensor {
         val newData = Array(size) {
             data[it] * other.toDouble()
@@ -122,6 +125,13 @@ open class ComplexTensor(val shape: IntArray, val data: Array<ComplexDouble> =
     open operator fun div(other: Number): ComplexTensor {
         val newData = Array(size) {
             data[it] / other.toDouble()
+        }
+        return ComplexTensor(shape, newData)
+    }
+
+    open operator fun div(other: ComplexDouble): ComplexTensor {
+        val newData = Array(size) {
+            data[it] / other
         }
         return ComplexTensor(shape, newData)
     }
@@ -156,17 +166,17 @@ open class ComplexTensor(val shape: IntArray, val data: Array<ComplexDouble> =
         }
     }
 
-//    fun toComplexMatrix(): ComplexMatrix {
-//        return when (dim) {
-//            1 -> {
-//                ComplexMatrix(1, shape[0], data)
-//            }
-//            2 -> {
-//                ComplexMatrix(shape[0], shape[1], data)
-//            }
-//            else -> throw IllegalStateException("ComplexTensor.toComplexMatrix: must be a 2 dimensional tensor, not $dim.")
-//        }
-//    }
+    fun toComplexMatrix(): ComplexMatrix {
+        return when (dim) {
+            1 -> {
+                ComplexMatrix(1, shape[0], data)
+            }
+            2 -> {
+                ComplexMatrix(shape[0], shape[1], data)
+            }
+            else -> throw IllegalStateException("ComplexTensor.toComplexMatrix: must be a 2 dimensional tensor, not $dim.")
+        }
+    }
 
     fun reshape(newShape: IntArray): ComplexTensor {
         var negOneIndex = -1
@@ -191,9 +201,9 @@ open class ComplexTensor(val shape: IntArray, val data: Array<ComplexDouble> =
         return ComplexTensor(newShape, data)
     }
 
-//    fun flatten(): RowVector {
-//        return this.reshape(intArrayOf(-1)).toComplexMatrix().toRowVector()
-//    }
+    fun flatten(): ComplexRowVector {
+        return this.reshape(intArrayOf(-1)).toComplexMatrix().toComplexRowVector()
+    }
 
     fun concat(other: ComplexTensor, concatDim: Int): ComplexTensor {
         if (dim != other.dim || concatDim >= dim) throw IllegalArgumentException("ComplexTensor.concat: invalid dimension")
@@ -221,6 +231,12 @@ open class ComplexTensor(val shape: IntArray, val data: Array<ComplexDouble> =
                 }
             })
         }
+    }
+
+    open fun map(lambda: (e: ComplexDouble) -> ComplexDouble): ComplexTensor {
+        return ComplexTensor(shape, Array(size) {
+            lambda(data[it])
+        })
     }
 
     private fun dataIndexToTensorIndices(newShape: IntArray, dataIndex: Int): IntArray {

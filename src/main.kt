@@ -1,8 +1,8 @@
 import complexTensor.ComplexTensor
 import realTensor.Matrix
 import utils.ComplexDouble
-import utils.i
-import utils.r
+import utils.I
+import utils.R
 
 // Test
 fun main(args: Array<String>) {
@@ -126,17 +126,24 @@ fun main(args: Array<String>) {
 //    println(tensor5)
 //    println(tensor4.concat(tensor5, 0))
 
-//    var z1 = ComplexDouble(1, 1)
-//    val z2 = ComplexDouble(1, -1)
+//    var z = ComplexDouble(1, 1)
+//    println(z)
+    val z = 1.R - 2.I
+    println(z)
 //    z1 += z2
 //    println(z1)
 //    println(z2)
 //    println(z1 / z2)
     
-    val compT1 = ComplexTensor(intArrayOf(2,2), Array(4) { it.r - it.i})
-    val compT2 = ComplexTensor(intArrayOf(2,2), Array(4) {it.i})
-    println(compT1)
-    println(compT2)
-    println(compT1 + compT2)
-    println(compT1 * compT2)
+//    val compT1 = ComplexTensor(intArrayOf(2,2,2), Array(4) { it.R - it.I})
+//    val compT2 = ComplexTensor(intArrayOf(2,2), Array(4) {it.I})
+//    println(compT1)
+//    println(compT2)
+//    println(compT1 + compT2)
+//    println(compT1 * compT2)
+//    println(ComplexTensor.stack(arrayListOf(compT1, compT2)))
+//    println(compT1.concat(compT2, 0))
+
+    val complexTensor = ComplexTensor(intArrayOf(2,2,2), Array(8) { it.R - it.I })
+    println(complexTensor)
 }

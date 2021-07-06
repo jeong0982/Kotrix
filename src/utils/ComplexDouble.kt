@@ -26,6 +26,12 @@ class ComplexDouble (real: Number, imaginary: Number) {
 
     operator fun div(other: Number) = ComplexDouble(re/other.toDouble(), im/other.toDouble())
 
+    override operator fun equals(other: Any?): Boolean {
+        return if (other is ComplexDouble) {
+            re == other.re && im == other.im
+        } else false
+    }
+
     fun conj() = ComplexDouble(re, -im)
 
     fun abs() = sqrt(re.pow(2) + im.pow(2))

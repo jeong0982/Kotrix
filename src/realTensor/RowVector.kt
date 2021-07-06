@@ -1,5 +1,8 @@
 package realTensor
 
+import complexTensor.ComplexRowVector
+import utils.R
+
 class RowVector(val length: Int, data: DoubleArray = DoubleArray(length){0.0}): Matrix(1, length, data) {
 
     constructor(length: Int, data: LongArray) : this(length, DoubleArray(length) { data[it].toDouble() })
@@ -138,7 +141,7 @@ class RowVector(val length: Int, data: DoubleArray = DoubleArray(length){0.0}): 
 
     fun crossProduct(other: RowVector): RowVector {
         if (length != 3 || other.length != 3)
-            throw IllegalArgumentException("ColumnVector.dotProduct: Both operands must be 3 dimensional vectors")
+            throw IllegalArgumentException("RowVector.dotProduct: Both operands must be 3 dimensional vectors")
         else {
             return RowVector(length, doubleArrayOf(
                 this[1] * other[2] - this[2] * other[1],
@@ -160,5 +163,9 @@ class RowVector(val length: Int, data: DoubleArray = DoubleArray(length){0.0}): 
         return RowVector(length, DoubleArray(length) {
             lambda(this[it]).toDouble()
         })
+    }
+
+    override fun toComplex(): ComplexRowVector {
+        return ComplexRowVector(length, Array(length) {data[it].R})
     }
 }
