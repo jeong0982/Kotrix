@@ -1,5 +1,9 @@
 package utils
 
+import complexTensor.ComplexColumnVector
+import complexTensor.ComplexMatrix
+import complexTensor.ComplexRowVector
+import complexTensor.ComplexTensor
 import kotlin.math.*
 
 class ComplexDouble (real: Number, imaginary: Number) {
@@ -21,6 +25,14 @@ class ComplexDouble (real: Number, imaginary: Number) {
     operator fun times(other: ComplexDouble) = ComplexDouble(re*other.re - im*other.im, re*other.im + im*other.re)
 
     operator fun times(other: Number) = ComplexDouble(re*other.toDouble(), im*other.toDouble())
+
+    operator fun times(other: ComplexTensor) = other * this
+
+    operator fun times(other: ComplexMatrix) = other * this
+
+    operator fun times(other: ComplexRowVector) = other * this
+
+    operator fun times(other: ComplexColumnVector) = other * this
 
     operator fun div(other: ComplexDouble) = this * other.conj() / (other.re.pow(2) + other.im.pow(2))
 

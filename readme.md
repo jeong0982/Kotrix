@@ -11,6 +11,17 @@ Finally, `ColumnVector` and `RowVector` classes, which inherits `Matrix`, repres
 As `Kotrix` also supports complex tensors, all these classes have their own variations for Complex number(represented by `ComplexDouble` class):
 `ComplexTensor`, `ComplexMatrix`, `ComplexRowVector` and `ComplexColumnVector`.
 
+### Supporting Linear Algebraic Operations
+* DET - determinant
+* INV - inverse matrix
+* TF - triangular factorizations (PLU decomposition)
+* OF - orthogonal factorizations (QR, QL, generalized fatorizations)
+* EVP - eigenvalue problems
+* SVD - singular value decomposition
+
+| DET | INV | TF  | OF | EVP | SVD |
+|-----|-----|-----|----|-----|-----|
+| Yes | Yes | Yes | No | No  | No  |
 
 ## Class Initialization
 ### Tensor
@@ -212,6 +223,7 @@ println(complexTensor)
     * Downcast to `RowVector` class
     * Downcast to `ColumnVector` class
     * Convert to `ComplexMatrix` class `val cplxMat = mat.toComplex`
+    * PLU decomposition `val pluArray = mat.plu() // arrayOf(P,L,U)`
 
 
 ### Vectors

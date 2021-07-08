@@ -5,6 +5,7 @@ import utils.R
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
+import utils.times
 
 open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(rows * cols) { 0.0 }): Tensor(intArrayOf(rows, cols), data) {
 
@@ -385,6 +386,49 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
         return ColumnVector(rows, data)
     }
 
+    fun plu(): Array<Matrix> { // PLU
+        if (rows != cols) throw IllegalArgumentException("Matrix.plu: Only available for square matrices")
+        return when (rows) {
+            1 -> arrayOf(identityMatrix(1), identityMatrix(1), this)
+            else -> {
+                var switchIndex = 0
+                val firstColumn = DoubleArray(rows) { this[it, 0] }
+                var a = 0.0
+
+                for (elem in firstColumn) {
+                    if (elem != 0.0) {
+                        a = elem; break
+                    } else switchIndex += 1
+                }
+
+                val matP1 = rowSwitchingMatrix(rows, 0, switchIndex)
+                val matP1A = switchRow(0, switchIndex)
+                val v = matP1A.getSubmatrix(1, rows, 0, 1)
+                val wT = matP1A.getSubmatrix(0, 1, 1, cols)
+                val c = if (a != 0.0) 1 / a else 0.0
+                val matAPrime = matP1A.getSubmatrix(1, rows, 1, cols)
+
+                val pLUPrime = (matAPrime - (v * wT) * c).plu()
+                val cvPrime = c * pLUPrime[0] * v
+
+                val matPprime = identityMatrix(rows)
+                matPprime.setSubmatrix(1, rows, 1, cols, pLUPrime[0])
+                val matP = matPprime * matP1
+
+                val matL = identityMatrix(rows)
+                matL.setSubmatrix(1, rows, 1, cols, pLUPrime[1])
+                matL.setSubmatrix(1, rows, 0, 1, cvPrime)
+
+                val matU = identityMatrix(rows)
+                matU[0, 0] = a
+                matU.setSubmatrix(0, 1, 1, cols, wT)
+                matU.setSubmatrix(1, rows, 1, cols, pLUPrime[2])
+
+                arrayOf(matP, matL, matU)
+            }
+        }
+    }
+
     override fun toComplex(): ComplexMatrix {
         return ComplexMatrix(rows, cols, Array(rows * cols) { data[it].R })
     }
@@ -442,6 +486,11 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
 
         fun eulerRotationMatrix3d(alpha: Double, beta: Double, gamma: Double): Matrix {
             return rotationMatrix3dZ(alpha) * rotationMatrix3dX(beta) * rotationMatrix3dZ(gamma)
+        }
+
+        fun rowSwitchingMatrix(n: Int, firstIndex: Int, secondIndex: Int): Matrix {
+            if (firstIndex >= n || secondIndex >= n) throw IllegalArgumentException("Matrix.rowSwitchingMatrix: Index out of bound")
+            return identityMatrix(n).switchRow(firstIndex, secondIndex)
         }
     }
 }

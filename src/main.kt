@@ -1,6 +1,5 @@
-import complexTensor.ComplexTensor
+import complexTensor.ComplexMatrix
 import realTensor.Matrix
-import utils.ComplexDouble
 import utils.I
 import utils.R
 
@@ -128,8 +127,8 @@ fun main(args: Array<String>) {
 
 //    var z = ComplexDouble(1, 1)
 //    println(z)
-    val z = 1.R - 2.I
-    println(z)
+//    val z = 1.R - 2.I
+//    println(z)
 //    z1 += z2
 //    println(z1)
 //    println(z2)
@@ -144,6 +143,13 @@ fun main(args: Array<String>) {
 //    println(ComplexTensor.stack(arrayListOf(compT1, compT2)))
 //    println(compT1.concat(compT2, 0))
 
-    val complexTensor = ComplexTensor(intArrayOf(2,2,2), Array(8) { it.R - it.I })
-    println(complexTensor)
+//    val complexTensor = ComplexTensor(intArrayOf(2,2,2), Array(8) { it.R - it.I })
+//    println(complexTensor)
+
+    val testMat = ComplexMatrix(3, 3, Array(9){it.R - it.I + 3.6})
+    val plu = testMat.plu()
+    plu.forEach { println(it) }
+
+    println(plu[0] * testMat)
+    println(plu[1] * plu[2])
 }
