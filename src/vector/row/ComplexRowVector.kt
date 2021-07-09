@@ -1,7 +1,8 @@
-package complexTensor
+package vector.row
 
-import realTensor.ColumnVector
-import realTensor.RowVector
+import vector.column.ComplexColumnVector
+import matrix.ComplexMatrix
+import vector.column.ColumnVector
 import utils.ComplexDouble
 import utils.R
 

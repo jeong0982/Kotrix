@@ -1,11 +1,13 @@
-package realTensor
+package matrix
 
-import complexTensor.ComplexMatrix
+import matrix.operations.determinant
+import vector.column.ColumnVector
+import vector.row.RowVector
+import tensor.Tensor
 import utils.R
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
-import utils.times
 
 open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(rows * cols) { 0.0 }): Tensor(intArrayOf(rows, cols), data) {
 
@@ -139,39 +141,6 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
         return frbNorm
     }
 
-    fun determinant(): Double { // using LU decomposition through recursion, O(n^3)
-        if (rows != cols) throw IllegalArgumentException("Matrix.determinant: Only available for square matrices")
-        when (rows) {
-            1 -> return this[0, 0]
-            2 -> return this[0, 0] * this[1, 1] - this[0, 1] * this[1, 0]
-            else -> {
-                var sign = 1
-                var switchIndex = 0
-                val firstColumn = DoubleArray(rows) { this[it, 0] }
-                var a = 0.0
-
-                for (elem in firstColumn) {
-                    if (elem != 0.0) {
-                        a = elem
-                        break
-                    } else {
-                        sign *= -1
-                        switchIndex += 1
-                    }
-                }
-                return if (a == 0.0) 0.0 // 첫 번째 열이 모두 0이다.
-                else {
-                    val matP1A = switchRow(0, switchIndex)
-                    val v = matP1A.getSubmatrix(1, rows, 0, 1)
-                    val wT = matP1A.getSubmatrix(0, 1, 1, cols)
-                    val c = 1 / a
-                    val matAPrime = matP1A.getSubmatrix(1, rows, 1, cols)
-                    sign * a * (matAPrime - (v * wT) * c).determinant()
-                }
-            }
-        }
-    }
-
     fun adjointMatrix() : Matrix {
         if (rows != cols) throw IllegalArgumentException("Matrix.adjointMatrix: Only available for square matrices")
         val newData = DoubleArray(rows * cols) {
@@ -182,13 +151,6 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
             sign * cofactorDet
         }
         return Matrix(rows, cols, newData).transpose()
-    }
-
-    fun inverseMatrix() : Matrix {
-        if (rows != cols) throw IllegalArgumentException("Matrix.inverseMatrix: Only available for square matrices")
-        val det = this.determinant()
-        return if (det == 0.0) Matrix.identityMatrix(rows)
-        else this.adjointMatrix() * (det.pow(-1))
     }
 
     open fun getSubmatrix(rowIndexStart: Int, rowIndexEnd: Int, colIndexStart: Int, colIndexEnd: Int): Matrix {
@@ -384,49 +346,6 @@ open class Matrix(val rows: Int, val cols: Int, data: DoubleArray = DoubleArray(
     fun toColVector(): ColumnVector {
         if (cols != 1) throw IllegalStateException("Matrix.toColVector: Cannot downcast to ColumnVector")
         return ColumnVector(rows, data)
-    }
-
-    fun plu(): Array<Matrix> { // PLU
-        if (rows != cols) throw IllegalArgumentException("Matrix.plu: Only available for square matrices")
-        return when (rows) {
-            1 -> arrayOf(identityMatrix(1), identityMatrix(1), this)
-            else -> {
-                var switchIndex = 0
-                val firstColumn = DoubleArray(rows) { this[it, 0] }
-                var a = 0.0
-
-                for (elem in firstColumn) {
-                    if (elem != 0.0) {
-                        a = elem; break
-                    } else switchIndex += 1
-                }
-
-                val matP1 = rowSwitchingMatrix(rows, 0, switchIndex)
-                val matP1A = switchRow(0, switchIndex)
-                val v = matP1A.getSubmatrix(1, rows, 0, 1)
-                val wT = matP1A.getSubmatrix(0, 1, 1, cols)
-                val c = if (a != 0.0) 1 / a else 0.0
-                val matAPrime = matP1A.getSubmatrix(1, rows, 1, cols)
-
-                val pLUPrime = (matAPrime - (v * wT) * c).plu()
-                val cvPrime = c * pLUPrime[0] * v
-
-                val matPprime = identityMatrix(rows)
-                matPprime.setSubmatrix(1, rows, 1, cols, pLUPrime[0])
-                val matP = matPprime * matP1
-
-                val matL = identityMatrix(rows)
-                matL.setSubmatrix(1, rows, 1, cols, pLUPrime[1])
-                matL.setSubmatrix(1, rows, 0, 1, cvPrime)
-
-                val matU = identityMatrix(rows)
-                matU[0, 0] = a
-                matU.setSubmatrix(0, 1, 1, cols, wT)
-                matU.setSubmatrix(1, rows, 1, cols, pLUPrime[2])
-
-                arrayOf(matP, matL, matU)
-            }
-        }
     }
 
     override fun toComplex(): ComplexMatrix {

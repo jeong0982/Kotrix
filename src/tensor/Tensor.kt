@@ -1,9 +1,9 @@
-package realTensor
+package tensor
 
-import complexTensor.ComplexTensor
+import matrix.Matrix
+import vector.row.RowVector
 import utils.R
-import utils.StringVector
-import utils.toFormattedString
+import utils.visualization.StringVector
 
 open class Tensor(val shape: IntArray, val data: DoubleArray =
     DoubleArray(shape.reduce {
@@ -283,102 +283,8 @@ open class Tensor(val shape: IntArray, val data: DoubleArray =
         }
     }
 
-    private fun toStringVector(): StringVector {
-        return when (dim) {
-            1 -> {
-                val stringData = arrayListOf<String>()
-                var data = "[ "
-                for (i in 0 until shape[0]) {
-                    val value = this[intArrayOf(i)]
-                    data += value.toFormattedString()
-                }
-                data += " ]"
-                stringData.add(data)
-                StringVector(stringData)
-            }
-            2 -> {
-                val stringData = arrayListOf<String>()
-                for (i in 0 until shape[0]) {
-                    var data = "[ "
-                    for (j in 0 until shape[1]) {
-                        val value = this[intArrayOf(i, j)]
-                        data += value.toFormattedString()
-                    }
-                    data += " ]"
-                    stringData.add(data)
-                }
-                StringVector(stringData)
-            }
-            else -> {
-                val leftBracketData = arrayListOf<String>()
-                val rightBracketData = arrayListOf<String>()
-                val upperBlankData =  arrayListOf<String>()
-                val lowerBlankData =  arrayListOf<String>()
-                when {
-                    dim % 2 == 0 -> {
-                        val height = shape.foldRightIndexed(1) { index, i, acc ->
-                            when {
-                                index % 2 == 1                  -> acc
-                                index == shape.lastIndex - 1    -> acc * i
-                                else                            -> acc * i + i + 1
-                            }
-                        }
-                        repeat(height) { leftBracketData.add("["); rightBracketData.add("]") }
-                        val leftBracket = StringVector(leftBracketData)
-                        val rightBracket = StringVector(rightBracketData)
-                        val bodyStringVector = (1 until shape[0]).fold(
-                            (1 until shape[1]).fold(this[0L][0L].toStringVector()) { acc2, j ->
-                                acc2.concatHorizontal(this[0L][j.toLong()].toStringVector())
-                            }
-                        ) { acc1, i ->
-                            acc1.concatVertical(
-                                (1 until shape[1]).fold(this[i.toLong()][0L].toStringVector()) { acc2, j ->
-                                    acc2.concatHorizontal(this[i.toLong()][j.toLong()].toStringVector())
-                                }
-                            )
-                        }
-                        val bodyUpperWidth = bodyStringVector.stringData[0].length
-                        val bodyLowerWidth = bodyStringVector.stringData.last().length
-                        upperBlankData.add(" ".repeat(bodyUpperWidth))
-                        lowerBlankData.add(" ".repeat(bodyLowerWidth))
-                        val upperBlank = StringVector(upperBlankData)
-                        val lowerBlank = StringVector(lowerBlankData)
-
-                        val bodyStringVectorWithPadding = upperBlank.rawConcatVertical(bodyStringVector).rawConcatVertical(lowerBlank)
-                        leftBracket.concatHorizontal(bodyStringVectorWithPadding).concatHorizontal(rightBracket)
-                    }
-                    else -> {
-                        val height = shape.foldRightIndexed(1) { index, i, acc ->
-                            when {
-                                index == 0 -> acc + 2
-                                index % 2 == 0 -> acc
-                                index == shape.lastIndex - 1 -> acc * i
-                                else -> acc*i + i + 1
-                            }
-                        }
-                        repeat(height) { leftBracketData.add("["); rightBracketData.add("]") }
-                        val leftBracket = StringVector(leftBracketData)
-                        val rightBracket = StringVector(rightBracketData)
-                        val bodyStringVector = (1 until shape[0]).fold(this[0L].toStringVector()) { acc, i ->
-                            acc.concatHorizontal(this[i.toLong()].toStringVector())
-                        }
-                        val bodyUpperWidth = bodyStringVector.stringData[0].length
-                        val bodyLowerWidth = bodyStringVector.stringData.last().length
-                        upperBlankData.add(" ".repeat(bodyUpperWidth))
-                        lowerBlankData.add(" ".repeat(bodyLowerWidth))
-                        val upperBlank = StringVector(upperBlankData)
-                        val lowerBlank = StringVector(lowerBlankData)
-
-                        val bodyStringVectorWithPadding = upperBlank.rawConcatVertical(bodyStringVector).rawConcatVertical(lowerBlank)
-                        leftBracket.concatHorizontal(bodyStringVectorWithPadding).concatHorizontal(rightBracket)
-                    }
-                }
-            }
-        }
-    }
-
     override fun toString(): String {
-        return toStringVector().toString() + "\n"
+        return StringVector.build(this).toString() + "\n"
     }
 
     companion object {

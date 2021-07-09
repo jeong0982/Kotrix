@@ -1,9 +1,9 @@
 package utils
 
-import complexTensor.ComplexColumnVector
-import complexTensor.ComplexMatrix
-import complexTensor.ComplexRowVector
-import complexTensor.ComplexTensor
+import vector.column.ComplexColumnVector
+import matrix.ComplexMatrix
+import vector.row.ComplexRowVector
+import tensor.ComplexTensor
 import kotlin.math.*
 
 class ComplexDouble (real: Number, imaginary: Number) {

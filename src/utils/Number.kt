@@ -1,13 +1,13 @@
 package utils
 
-import complexTensor.ComplexColumnVector
-import complexTensor.ComplexMatrix
-import complexTensor.ComplexRowVector
-import complexTensor.ComplexTensor
-import realTensor.ColumnVector
-import realTensor.Matrix
-import realTensor.RowVector
-import realTensor.Tensor
+import vector.column.ComplexColumnVector
+import matrix.ComplexMatrix
+import vector.row.ComplexRowVector
+import tensor.ComplexTensor
+import vector.column.ColumnVector
+import matrix.Matrix
+import vector.row.RowVector
+import tensor.Tensor
 
 
 val Number.I: ComplexDouble

@@ -1,7 +1,9 @@
-package complexTensor
+package vector.column
 
+import matrix.ComplexMatrix
 import utils.ComplexDouble
 import utils.R
+import vector.row.ComplexRowVector
 
 class ComplexColumnVector(val length: Int, data: Array<ComplexDouble> = Array(length){0.0.R}) : ComplexMatrix(length, 1, data) {
 

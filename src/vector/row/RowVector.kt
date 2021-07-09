@@ -1,6 +1,7 @@
-package realTensor
+package vector.row
 
-import complexTensor.ComplexRowVector
+import matrix.Matrix
+import vector.column.ColumnVector
 import utils.R
 
 class RowVector(val length: Int, data: DoubleArray = DoubleArray(length){0.0}): Matrix(1, length, data) {
